@@ -20,9 +20,15 @@ import { PublishModal } from '@/components/ui/PublishModal';
 
 interface PreviewCenterProps {
   isPublicView?: boolean;
+  deviceMode?: 'mobile' | 'tablet' | 'desktop';
+  hideHeader?: boolean;
 }
 
-export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = false }) => {
+export const PreviewCenter: React.FC<PreviewCenterProps> = ({
+  isPublicView = false,
+  deviceMode: deviceModeProp,
+  hideHeader = false,
+}) => {
   const {
     draftMenu,
     publishedMenu,
@@ -35,7 +41,9 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = fal
     publishMenu,
   } = useStore();
 
-  const [deviceMode, setDeviceMode] = useState<'mobile' | 'tablet' | 'desktop'>('mobile');
+  const [internalDeviceMode, setInternalDeviceMode] = useState<'mobile' | 'tablet' | 'desktop'>('mobile');
+  const deviceMode = deviceModeProp || internalDeviceMode;
+  const setDeviceMode = setInternalDeviceMode;
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [saveToast, setSaveToast] = useState(false);
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null);
@@ -523,8 +531,8 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = fal
 
   return (
     <div className="flex-1 flex flex-col h-full bg-zinc-100/70 overflow-hidden min-w-0">
-      {/* Top Builder Control Bar (Only in Builder Mode) */}
-      {!isPublicView && (
+      {/* Top Builder Control Bar (Only in Builder Mode when not hidden by parent layout) */}
+      {!isPublicView && !hideHeader && (
         <div className="h-14 bg-white border-b border-border px-3.5 sm:px-5 flex items-center justify-between z-20 flex-shrink-0 sticky top-0 gap-2 overflow-x-auto select-none">
           {/* Status & Store Tag */}
           <div className="flex items-center gap-2 flex-shrink-0">
