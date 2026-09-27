@@ -227,33 +227,24 @@ export default function PublicMenuPage() {
     setTimeout(() => setAddToast(null), 2500);
   };
 
-  // Quick note item from list with default options
+  // Quick note item from list: if has options -> open options modal; if no options -> add directly!
   const handleQuickAddNote = (prod: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    const defaultOptions: NoteItemOption[] = [];
-    let unitPrice = prod.sale_price;
 
+    // If product has options, open detail modal for option selection
     if (prod.option_groups && prod.option_groups.length > 0) {
-      prod.option_groups.forEach((group) => {
-        if (group.options && group.options.length > 0) {
-          const firstOpt = group.options[0];
-          defaultOptions.push({
-            groupName: group.name,
-            optionName: firstOpt.name,
-            additionalPrice: firstOpt.additional_price || 0,
-          });
-          unitPrice += firstOpt.additional_price || 0;
-        }
-      });
+      setSelectedProduct(prod);
+      return;
     }
 
+    // If product has no options, directly add to note
     const newItem: NoteItem = {
       id: 'note-' + Date.now(),
       productId: prod.id,
       productName: prod.name,
       basePrice: prod.sale_price,
-      selectedOptions: defaultOptions,
-      unitPrice,
+      selectedOptions: [],
+      unitPrice: prod.sale_price,
       quantity: 1,
     };
 
