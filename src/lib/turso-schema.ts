@@ -33,6 +33,7 @@ export async function initTursoTables() {
       store_id TEXT,
       category_id TEXT,
       name TEXT NOT NULL,
+      description TEXT,
       image_url TEXT,
       sale_price REAL DEFAULT 0,
       regular_price REAL,
@@ -56,4 +57,11 @@ export async function initTursoTables() {
       updated_at TEXT
     );
   `);
+
+  // Migrate existing tables if description column is missing
+  try {
+    await turso.execute('ALTER TABLE products ADD COLUMN description TEXT;');
+  } catch (e) {
+    // Column already exists or error ignored
+  }
 }

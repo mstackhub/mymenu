@@ -48,6 +48,7 @@ export interface Product {
   store_id: string;
   category_id: string;
   name: string;
+  description?: string;
   image_url: string;
   sale_price: number;
   regular_price?: number | null;

@@ -28,6 +28,7 @@ export default function ProductsPage() {
 
   // Form State
   const [formName, setFormName] = useState('');
+  const [formDescription, setFormDescription] = useState('');
   const [formCategoryId, setFormCategoryId] = useState('');
   const [formSalePrice, setFormSalePrice] = useState<number>(0);
   const [formRegularPrice, setFormRegularPrice] = useState<string>('');
@@ -39,6 +40,7 @@ export default function ProductsPage() {
   const openCreateModal = () => {
     setEditingProduct(null);
     setFormName('');
+    setFormDescription('');
     setFormCategoryId(categories[0]?.id || '');
     setFormSalePrice(80);
     setFormRegularPrice('');
@@ -51,6 +53,7 @@ export default function ProductsPage() {
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
     setFormName(product.name);
+    setFormDescription(product.description || '');
     setFormCategoryId(product.category_id);
     setFormSalePrice(product.sale_price);
     setFormRegularPrice(product.regular_price ? product.regular_price.toString() : '');
@@ -67,6 +70,7 @@ export default function ProductsPage() {
     if (editingProduct) {
       updateProduct(editingProduct.id, {
         name: formName,
+        description: formDescription.trim() || undefined,
         category_id: formCategoryId,
         sale_price: Number(formSalePrice),
         regular_price: regPriceNum,
@@ -78,6 +82,7 @@ export default function ProductsPage() {
       addProduct({
         store_id: store.id,
         name: formName,
+        description: formDescription.trim() || undefined,
         category_id: formCategoryId,
         sale_price: Number(formSalePrice),
         regular_price: regPriceNum,
@@ -290,6 +295,11 @@ export default function ProductsPage() {
                             </span>
                           )}
                         </div>
+                        {product.description && (
+                          <p className="text-xs text-dark-muted line-clamp-1 mt-1 max-w-md">
+                            {product.description}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -384,6 +394,19 @@ export default function ProductsPage() {
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="เช่น ข้าวผัดกุ้งสด"
                       className="w-full px-3 py-2 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-dark-secondary block mb-1">
+                      รายละเอียดอาหาร / คำอธิบาย (Description)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={formDescription}
+                      onChange={(e) => setFormDescription(e.target.value)}
+                      placeholder="อธิบายรายละเอียด เช่น วัตถุดิบ ส่วนประกอบ รสชาติ (เช่น ข้าวหอมมะลิผัดกุ้งสดตัวโต หอมกลิ่นกระทะ เสิร์ฟพร้อมผักสด)..."
+                      className="w-full px-3 py-2 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 resize-none transition-colors"
                     />
                   </div>
 

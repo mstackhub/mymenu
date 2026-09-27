@@ -65,13 +65,14 @@ export async function POST() {
       // Seed products
       for (const prod of DEFAULT_PRODUCTS) {
         await turso.execute({
-          sql: `INSERT INTO products (id, store_id, category_id, name, image_url, sale_price, regular_price, status, sort_order, option_groups, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          sql: `INSERT INTO products (id, store_id, category_id, name, description, image_url, sale_price, regular_price, status, sort_order, option_groups, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             prod.id,
             DEFAULT_STORE.id,
             prod.category_id,
             prod.name,
+            prod.description || '',
             prod.image_url || '',
             prod.sale_price,
             prod.regular_price ?? null,

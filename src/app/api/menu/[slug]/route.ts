@@ -64,6 +64,7 @@ export async function GET(
       store_id: String(r.store_id),
       category_id: String(r.category_id),
       name: String(r.name),
+      description: r.description ? String(r.description) : undefined,
       image_url: String(r.image_url || ''),
       sale_price: Number(r.sale_price),
       regular_price: r.regular_price !== null && r.regular_price !== undefined ? Number(r.regular_price) : null,

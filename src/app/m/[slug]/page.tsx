@@ -624,6 +624,14 @@ export default function PublicMenuPage() {
                           >
                             {prod.name}
                           </h4>
+                          {prod.description && (
+                            <p
+                              className="text-[11px] mt-0.5 line-clamp-1 leading-snug"
+                              style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                            >
+                              {prod.description}
+                            </p>
+                          )}
                           {prod.option_groups && prod.option_groups.length > 0 && (
                             <p
                               className="text-[11px] mt-0.5 truncate"
@@ -690,6 +698,14 @@ export default function PublicMenuPage() {
                       >
                         {prod.name}
                       </span>
+                      {prod.description && (
+                        <p
+                          className="text-[11px] block mt-0.5 line-clamp-1 leading-snug"
+                          style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                        >
+                          {prod.description}
+                        </p>
+                      )}
                       {prod.option_groups && prod.option_groups.length > 0 && (
                         <span
                           className="text-[11px] block mt-0.5"
@@ -869,6 +885,11 @@ export default function PublicMenuPage() {
                     </span>
                   )}
                 </div>
+                {selectedProduct.description && (
+                  <p className="text-xs text-dark-secondary leading-relaxed mt-2.5 bg-zinc-50 p-3 rounded-2xl border border-border/70">
+                    {selectedProduct.description}
+                  </p>
+                )}
               </div>
 
               {/* Dynamic Option Groups Selection */}

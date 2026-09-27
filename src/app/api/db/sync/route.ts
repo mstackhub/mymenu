@@ -55,6 +55,7 @@ export async function GET() {
       store_id: String(r.store_id),
       category_id: String(r.category_id),
       name: String(r.name),
+      description: r.description ? String(r.description) : undefined,
       image_url: String(r.image_url || ''),
       sale_price: Number(r.sale_price),
       regular_price: r.regular_price !== null && r.regular_price !== undefined ? Number(r.regular_price) : null,
@@ -190,13 +191,14 @@ export async function POST(req: Request) {
 
     for (const prod of products || []) {
       await turso.execute({
-        sql: `INSERT INTO products (id, store_id, category_id, name, image_url, sale_price, regular_price, status, sort_order, option_groups, created_at, updated_at)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        sql: `INSERT INTO products (id, store_id, category_id, name, description, image_url, sale_price, regular_price, status, sort_order, option_groups, created_at, updated_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [
           prod.id,
           store.id,
           prod.category_id,
           prod.name,
+          prod.description || '',
           prod.image_url || '',
           prod.sale_price,
           prod.regular_price ?? null,

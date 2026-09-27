@@ -427,6 +427,14 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                             >
                               {prod.name}
                             </h4>
+                            {prod.description && (
+                              <p
+                                className="text-[11px] mt-0.5 line-clamp-1 leading-snug"
+                                style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                              >
+                                {prod.description}
+                              </p>
+                            )}
                             {prod.option_groups && prod.option_groups.length > 0 && (
                               <p
                                 className="text-[11px] mt-0.5"
@@ -487,6 +495,14 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                         >
                           {prod.name}
                         </span>
+                        {prod.description && (
+                          <p
+                            className="text-[11px] block mt-0.5 line-clamp-1 leading-snug"
+                            style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                          >
+                            {prod.description}
+                          </p>
+                        )}
                         {prod.option_groups && prod.option_groups.length > 0 && (
                           <span
                             className="text-[10px] block mt-0.5"
@@ -719,6 +735,11 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                     </span>
                   )}
                 </div>
+                {selectedProductForDetail.description && (
+                  <p className="text-xs text-dark-secondary leading-relaxed mt-2.5 bg-zinc-50 p-3 rounded-2xl border border-border/70">
+                    {selectedProductForDetail.description}
+                  </p>
+                )}
               </div>
 
               {/* Dynamic Option Groups Display */}
