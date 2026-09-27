@@ -633,16 +633,16 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = fal
       {/* Main Canvas Scroll Area */}
       <div
         onClick={() => !isPublicView && setSelectedSectionId(null)}
-        className="flex-1 overflow-y-auto p-4 sm:p-6 flex justify-center items-start min-h-0"
+        className="flex-1 overflow-y-auto p-2 sm:p-6 flex justify-center items-start min-h-0"
       >
         {/* Viewport Frame Container */}
         <div
           onClick={(e) => e.stopPropagation()}
           className={`bg-white transition-all duration-300 shadow-xl ${
             deviceMode === 'mobile'
-              ? 'w-[390px] min-h-[750px] rounded-[40px] border-[8px] border-zinc-900 overflow-hidden relative'
+              ? 'w-full max-w-[390px] min-h-[700px] rounded-[28px] sm:rounded-[40px] border-4 sm:border-[8px] border-zinc-900 overflow-hidden relative'
               : deviceMode === 'tablet'
-              ? 'w-[768px] min-h-[850px] rounded-2xl border border-border overflow-hidden'
+              ? 'w-full max-w-[768px] min-h-[850px] rounded-2xl border border-border overflow-hidden'
               : 'w-full max-w-[1100px] min-h-[900px] rounded-2xl border border-border overflow-hidden'
           }`}
         >

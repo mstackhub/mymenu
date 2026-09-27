@@ -27,7 +27,7 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-      <div className="p-6 sm:p-8 max-w-6xl mx-auto w-full space-y-8">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full space-y-6 sm:space-y-8">
         {/* Welcome Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-border shadow-xs">
           <div className="flex items-center gap-4">

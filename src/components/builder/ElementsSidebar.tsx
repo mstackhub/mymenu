@@ -255,7 +255,7 @@ export const ElementsSidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-64 lg:w-72 h-full flex-shrink-0 bg-white border-r border-border flex flex-col overflow-hidden select-none">
+    <div className="w-full h-full flex-shrink-0 bg-white border-r border-border flex flex-col overflow-hidden select-none">
       {/* Top Elements Palette */}
       <div className="p-3.5 border-b border-border flex-shrink-0">
         <div className="flex items-center justify-between mb-2.5">
