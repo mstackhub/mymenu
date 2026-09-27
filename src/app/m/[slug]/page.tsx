@@ -338,6 +338,7 @@ export default function PublicMenuPage() {
     const sectionIdSafe = `sec-${section.id.replace(/[^a-zA-Z0-9_-]/g, '')}`;
 
     const typoStyle: React.CSSProperties = {
+      fontFamily: styles.fontFamily || menuTheme.fontFamily || "'Sarabun', sans-serif",
       fontWeight: styles.fontWeight || 400,
       color: styles.color || menuTheme.textColor || '#18181B',
       textAlign: styles.textAlign || 'left',
@@ -765,6 +766,7 @@ export default function PublicMenuPage() {
       className="min-h-screen flex flex-col items-center font-sans antialiased transition-colors"
       style={{
         ...getPageBackgroundStyle(),
+        fontFamily: menuTheme.fontFamily || "'Sarabun', sans-serif",
         color: menuTheme.textColor || '#18181B',
       }}
     >

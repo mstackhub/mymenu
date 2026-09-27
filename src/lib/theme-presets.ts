@@ -19,6 +19,7 @@ export interface ThemePreset {
   textMutedColor: string;
   accentColor: string;
   priceColor: string;
+  fontFamily?: string;
   isDark?: boolean;
 }
 

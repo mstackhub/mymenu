@@ -77,6 +77,7 @@ export interface SpacingValues {
 
 export interface SectionStyles {
   // Typography
+  fontFamily?: string;
   fontSize?: number; // Desktop / Base font size
   fontSizeMobile?: number; // Mobile font size
   fontWeight?: 300 | 400 | 500 | 600 | 700 | 800;
@@ -163,6 +164,7 @@ export interface MenuSection {
 
 export interface MenuTheme {
   presetId?: string;
+  fontFamily?: string;
   backgroundType: 'color' | 'gradient' | 'pattern' | 'image';
   pageBgColor?: string;
   pageBgGradient?: string;

@@ -12,14 +12,17 @@ import {
   Flame,
   Layout,
   Layers,
+  Type,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 import { THEME_PRESETS, ThemePreset } from '@/lib/theme-presets';
+import { AVAILABLE_FONTS, FontOption } from '@/lib/fonts';
 import { MenuTheme } from '@/types';
 
 export const ThemeSettingsPanel: React.FC = () => {
   const { draftMenu, updateMenuTheme } = useStore();
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [fontCategory, setFontCategory] = useState<string>('all');
 
   const theme: MenuTheme = draftMenu.theme || {
     presetId: 'minimal-white',
@@ -49,6 +52,7 @@ export const ThemeSettingsPanel: React.FC = () => {
       textMutedColor: preset.textMutedColor,
       accentColor: preset.accentColor,
       priceColor: preset.priceColor,
+      fontFamily: preset.fontFamily || theme.fontFamily || "'Sarabun', sans-serif",
       isDark: false,
     });
   };
@@ -279,6 +283,94 @@ export const ThemeSettingsPanel: React.FC = () => {
             />
           </div>
         )}
+      </div>
+
+      {/* FONT FAMILY & TYPOGRAPHY SETTINGS */}
+      <div className="space-y-3 pt-4 border-t border-border">
+        <div className="flex items-center justify-between">
+          <div>
+            <label className="font-bold text-dark-primary uppercase tracking-wider text-[11px] block flex items-center gap-1.5">
+              <Type className="w-3.5 h-3.5 text-primary-500" />
+              <span>ฟอนต์ตัวหนังสือเมนู (Font Family)</span>
+            </label>
+            <p className="text-[10px] text-dark-muted mt-0.5">
+              เลือกรูปแบบตัวอักษรภาษาไทย-อังกฤษ สำหรับเมนูอาหารทั้งหน้า
+            </p>
+          </div>
+          <span className="text-[10px] font-semibold bg-zinc-100 text-dark-secondary px-2 py-0.5 rounded-md border border-border/80">
+            {AVAILABLE_FONTS.find((f) => f.family === (theme.fontFamily || "'Sarabun', sans-serif"))?.name || 'Sarabun'}
+          </span>
+        </div>
+
+        {/* Font Category Filter Tabs */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none text-[10px]">
+          {[
+            { id: 'all', label: 'ทั้งหมด' },
+            { id: 'Modern', label: '⚡ โมเดิร์น' },
+            { id: 'Clean', label: '🤍 คลีน & อ่านง่าย' },
+            { id: 'Friendly', label: '🍰 อบอุ่น/น่ารัก' },
+            { id: 'Premium', label: '👑 พรีเมียม' },
+            { id: 'Street', label: '🔥 เท่/สตรีท' },
+            { id: 'Decorative', label: '✨ ไทยวิจิตร' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFontCategory(tab.id)}
+              className={`px-2 py-1 rounded-lg font-medium whitespace-nowrap transition-all ${
+                fontCategory === tab.id
+                  ? 'bg-zinc-900 text-white shadow-2xs font-semibold'
+                  : 'bg-zinc-100 text-dark-secondary hover:bg-zinc-200'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Font Selection Cards Grid */}
+        <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+          {AVAILABLE_FONTS.filter((f) => fontCategory === 'all' || f.category === fontCategory).map((font) => {
+            const isSelected = (theme.fontFamily || "'Sarabun', sans-serif") === font.family;
+            return (
+              <button
+                key={font.id}
+                type="button"
+                onClick={() => updateMenuTheme({ fontFamily: font.family })}
+                className={`w-full text-left p-3 rounded-2xl border transition-all relative overflow-hidden group ${
+                  isSelected
+                    ? 'border-primary-500 bg-orange-50/40 ring-1 ring-primary-500/30 shadow-xs'
+                    : 'border-border bg-white hover:bg-zinc-50/80 hover:border-zinc-300'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-dark-primary">{font.name}</span>
+                    <span className="text-[10px] text-dark-muted font-normal">({font.nameTh})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-medium bg-zinc-100 text-dark-secondary px-1.5 py-0.5 rounded">
+                      {font.tag}
+                    </span>
+                    {isSelected && (
+                      <div className="w-4 h-4 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-2xs">
+                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Real-time Font Preview Sentence */}
+                <p
+                  className="text-xs text-dark-secondary mt-1.5 tracking-normal leading-relaxed truncate"
+                  style={{ fontFamily: font.family }}
+                >
+                  {font.previewText}
+                </p>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* RESPONSIVE LAYOUT & CONTAINER WIDTH */}

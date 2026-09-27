@@ -25,6 +25,7 @@ import { ImageUploadModal } from '@/components/ui/ImageUploadModal';
 import { FoodSelectModal } from '@/components/builder/FoodSelectModal';
 import { ThemeSettingsPanel } from '@/components/builder/ThemeSettingsPanel';
 import { Palette, SlidersHorizontal } from 'lucide-react';
+import { AVAILABLE_FONTS } from '@/lib/fonts';
 
 const PRESET_COLORS = [
   '#18181B', // Dark Primary
@@ -662,6 +663,36 @@ export const PropertiesPanel: React.FC = () => {
                   <span>Mobile</span>
                 </button>
               </div>
+            </div>
+
+            {/* Font Family Override */}
+            <div className="space-y-1.5 p-2.5 bg-zinc-50 rounded-xl border border-border/80">
+              <div className="flex items-center justify-between text-dark-secondary text-[11px]">
+                <span className="font-medium">ฟอนต์เฉพาะส่วนนี้ (Font Family)</span>
+                {styles.fontFamily && (
+                  <button
+                    type="button"
+                    onClick={() => handleStyleChange('fontFamily', undefined)}
+                    className="text-[10px] text-primary-600 hover:underline font-semibold"
+                  >
+                    รีเซ็ตตามธีม
+                  </button>
+                )}
+              </div>
+              <select
+                value={styles.fontFamily || ''}
+                onChange={(e) => handleStyleChange('fontFamily', e.target.value || undefined)}
+                className="w-full p-2 bg-white border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 cursor-pointer font-medium"
+              >
+                <option value="">
+                  ⚡ ตามธีมเมนูหลัก ({AVAILABLE_FONTS.find((f) => f.family === (draftMenu.theme?.fontFamily || "'Sarabun', sans-serif"))?.name || 'Sarabun'})
+                </option>
+                {AVAILABLE_FONTS.map((font) => (
+                  <option key={font.id} value={font.family}>
+                    {font.name} — {font.nameTh}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Element Font Size (Desktop vs Mobile) */}

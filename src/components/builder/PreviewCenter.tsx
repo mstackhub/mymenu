@@ -95,6 +95,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
     }
     return {
       backgroundColor: menuTheme.pageBgColor || '#FFFFFF',
+      fontFamily: menuTheme.fontFamily || "'Sarabun', sans-serif",
     };
   };
 
@@ -139,6 +140,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
 
     // Typography common styles
     const typoStyle: React.CSSProperties = {
+      fontFamily: styles.fontFamily || menuTheme.fontFamily || "'Sarabun', sans-serif",
       fontSize: effectiveFontSize ? `${effectiveFontSize}px` : undefined,
       fontWeight: styles.fontWeight || 400,
       color: styles.color || menuTheme.textColor || '#18181B',
