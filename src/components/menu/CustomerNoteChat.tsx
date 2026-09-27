@@ -521,16 +521,6 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
                     </>
                   )}
                 </button>
-
-                {/* LINE Share Button */}
-                <button
-                  type="button"
-                  onClick={handleShareLine}
-                  className="w-full py-2.5 px-4 bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold rounded-2xl text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>ส่งรายการเข้าแชท LINE</span>
-                </button>
               </div>
             )}
           </div>
