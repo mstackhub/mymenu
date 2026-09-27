@@ -111,7 +111,7 @@ export const PropertiesPanel: React.FC = () => {
   };
 
   return (
-    <div className="w-80 h-full flex-shrink-0 bg-white border-l border-border flex flex-col overflow-hidden text-xs select-none">
+    <div className="w-72 lg:w-80 h-full flex-shrink-0 bg-white border-l border-border flex flex-col overflow-hidden text-xs select-none">
       {/* Top Main Mode Tab Switcher */}
       <div className="p-2 border-b border-border bg-zinc-50 flex-shrink-0 flex items-center gap-1">
         <button

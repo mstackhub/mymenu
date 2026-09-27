@@ -255,10 +255,10 @@ export const ElementsSidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-72 h-full flex-shrink-0 bg-white border-r border-border flex flex-col overflow-hidden select-none">
+    <div className="w-64 lg:w-72 h-full flex-shrink-0 bg-white border-r border-border flex flex-col overflow-hidden select-none">
       {/* Top Elements Palette */}
-      <div className="p-4 border-b border-border flex-shrink-0">
-        <div className="flex items-center justify-between mb-3">
+      <div className="p-3.5 border-b border-border flex-shrink-0">
+        <div className="flex items-center justify-between mb-2.5">
           <span className="text-xs font-bold text-dark-primary uppercase tracking-wider font-display">
             Elements ({ELEMENT_TEMPLATES.length})
           </span>
@@ -272,10 +272,10 @@ export const ElementsSidebar: React.FC = () => {
               <button
                 key={item.type}
                 onClick={() => addSection(item.type)}
-                className="flex flex-col items-center justify-center p-2.5 rounded-xl border border-border hover:border-primary-500 hover:bg-orange-50/40 text-dark-primary transition-all group text-center"
+                className="flex flex-col items-center justify-center p-2 rounded-xl border border-border hover:border-primary-500 hover:bg-orange-50/40 text-dark-primary transition-all group text-center"
               >
-                <div className="w-7 h-7 rounded-lg bg-zinc-100 group-hover:bg-primary-500 group-hover:text-white text-dark-secondary flex items-center justify-center transition-colors mb-1">
-                  <Icon className="w-4 h-4" />
+                <div className="w-6 h-6 rounded-lg bg-zinc-100 group-hover:bg-primary-500 group-hover:text-white text-dark-secondary flex items-center justify-center transition-colors mb-1">
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-semibold group-hover:text-primary-600 block">
                   {item.title}
@@ -288,10 +288,10 @@ export const ElementsSidebar: React.FC = () => {
         <button
           type="button"
           onClick={() => setSelectedSectionId(null)}
-          className="w-full mt-3 py-2 px-3 bg-gradient-to-r from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border border-orange-200/80 rounded-xl text-primary-700 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs"
+          className="w-full mt-2.5 py-2 px-3 bg-gradient-to-r from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border border-orange-200/80 rounded-xl text-primary-700 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs"
         >
-          <Palette className="w-4 h-4 text-primary-500" />
-          <span>🎨 Template พื้นหลัง & ธีมเมนู</span>
+          <Palette className="w-3.5 h-3.5 text-primary-500" />
+          <span>🎨 ตั้งค่าธีม & สีพื้นหลัง</span>
         </button>
       </div>
 

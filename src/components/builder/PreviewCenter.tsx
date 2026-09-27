@@ -525,94 +525,94 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = fal
     <div className="flex-1 flex flex-col h-full bg-zinc-100/70 overflow-hidden min-w-0">
       {/* Top Builder Control Bar (Only in Builder Mode) */}
       {!isPublicView && (
-        <div className="h-14 bg-white border-b border-border px-6 flex items-center justify-between z-20 flex-shrink-0 sticky top-0">
+        <div className="h-14 bg-white border-b border-border px-3.5 sm:px-5 flex items-center justify-between z-20 flex-shrink-0 sticky top-0 gap-2 overflow-x-auto select-none">
           {/* Status & Store Tag */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-bold text-dark-primary font-display">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-sm font-bold text-dark-primary font-display hidden xl:inline">
               Menu Canvas
             </span>
             <span
-              className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1.5 ${
+              className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1.5 whitespace-nowrap ${
                 draftMenu.status === 'published'
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   : 'bg-amber-50 text-amber-700 border border-amber-200'
               }`}
             >
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
+                className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
                   draftMenu.status === 'published' ? 'bg-emerald-500' : 'bg-amber-500'
                 }`}
               />
-              {draftMenu.status === 'published' ? 'Published' : 'Drafting'}
+              <span>{draftMenu.status === 'published' ? 'Published' : 'Drafting'}</span>
             </span>
           </div>
 
           {/* Viewport Switcher */}
-          <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-border">
+          <div className="flex items-center gap-0.5 bg-zinc-100 p-1 rounded-xl border border-border flex-shrink-0">
             <button
               onClick={() => setDeviceMode('mobile')}
-              className={`p-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap ${
                 deviceMode === 'mobile'
-                  ? 'bg-white text-primary-600 shadow-xs'
+                  ? 'bg-white text-primary-600 shadow-xs font-semibold'
                   : 'text-dark-secondary hover:text-dark-primary'
               }`}
               title="Mobile View (390px)"
             >
-              <Smartphone className="w-4 h-4" />
-              <span className="hidden sm:inline">Mobile</span>
+              <Smartphone className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>Mobile</span>
             </button>
             <button
               onClick={() => setDeviceMode('tablet')}
-              className={`p-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap ${
                 deviceMode === 'tablet'
-                  ? 'bg-white text-primary-600 shadow-xs'
+                  ? 'bg-white text-primary-600 shadow-xs font-semibold'
                   : 'text-dark-secondary hover:text-dark-primary'
               }`}
               title="Tablet View (768px)"
             >
-              <Tablet className="w-4 h-4" />
-              <span className="hidden sm:inline">Tablet</span>
+              <Tablet className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>Tablet</span>
             </button>
             <button
               onClick={() => setDeviceMode('desktop')}
-              className={`p-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap ${
                 deviceMode === 'desktop'
-                  ? 'bg-white text-primary-600 shadow-xs'
+                  ? 'bg-white text-primary-600 shadow-xs font-semibold'
                   : 'text-dark-secondary hover:text-dark-primary'
               }`}
               title="Desktop View (1200px)"
             >
-              <Monitor className="w-4 h-4" />
-              <span className="hidden sm:inline">Desktop</span>
+              <Monitor className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>Desktop</span>
             </button>
           </div>
 
           {/* Action Buttons: View Live, Save Draft & Publish */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <a
               href={`/m/${store.slug}`}
               target="_blank"
               rel="noreferrer"
-              className="px-3.5 py-1.5 bg-zinc-900 hover:bg-black text-white text-xs font-semibold rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-zinc-900 hover:bg-black text-white text-xs font-semibold rounded-xl transition-all shadow-xs flex items-center gap-1.5 whitespace-nowrap flex-shrink-0"
               title="เปิดดูหน้าเว็บจริงของลูกค้า (New Tab)"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-orange-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
               <span>ดูหน้าเว็บจริง</span>
             </a>
 
             <button
               type="button"
               onClick={handleSaveDraft}
-              className="px-3.5 py-1.5 bg-white border border-border hover:bg-zinc-50 text-dark-primary text-xs font-medium rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-white border border-border hover:bg-zinc-50 text-dark-primary text-xs font-medium rounded-xl transition-all shadow-xs flex items-center gap-1.5 whitespace-nowrap flex-shrink-0"
             >
               {saveToast ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-600">Saved Draft</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  <span className="text-emerald-600 font-semibold">Saved</span>
                 </>
               ) : (
                 <>
-                  <Save className="w-3.5 h-3.5 text-dark-secondary" />
+                  <Save className="w-3.5 h-3.5 text-dark-secondary flex-shrink-0" />
                   <span>บันทึก Draft</span>
                 </>
               )}
@@ -621,9 +621,9 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({ isPublicView = fal
             <button
               type="button"
               onClick={handlePublish}
-              className="px-4 py-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+              className="px-3.5 py-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold rounded-xl transition-all shadow-sm flex items-center gap-1.5 whitespace-nowrap flex-shrink-0"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-3.5 h-3.5 flex-shrink-0" />
               <span>Publish เมนู</span>
             </button>
           </div>
