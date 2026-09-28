@@ -496,6 +496,119 @@ export const PropertiesPanel: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Border Radius Controls for Product Cards */}
+              <div className="space-y-3 pt-3 border-t border-border">
+                {/* Card Border Radius */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-dark-secondary">
+                    <span className="font-semibold text-dark-primary text-xs">ความโค้งมนของการ์ด (Card Radius)</span>
+                    <span className="font-mono text-xs font-bold text-dark-primary">
+                      {styles.borderRadius ?? 12}px
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min="0"
+                      max="32"
+                      value={styles.borderRadius ?? 12}
+                      onChange={(e) => handleStyleChange('borderRadius', parseInt(e.target.value) || 0)}
+                      className="flex-1 accent-primary-500 cursor-pointer"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      max="48"
+                      value={styles.borderRadius ?? 12}
+                      onChange={(e) => handleStyleChange('borderRadius', parseInt(e.target.value) || 0)}
+                      className="w-14 p-1.5 bg-zinc-50 border border-border rounded-lg text-xs font-mono text-center focus:outline-none focus:border-primary-500"
+                    />
+                  </div>
+                  {/* Card Presets */}
+                  <div className="grid grid-cols-5 gap-1 pt-0.5">
+                    {[
+                      { label: '0 px', value: 0 },
+                      { label: '8 px', value: 8 },
+                      { label: '12 px', value: 12 },
+                      { label: '16 px', value: 16 },
+                      { label: '24 px', value: 24 },
+                    ].map((preset) => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => handleStyleChange('borderRadius', preset.value)}
+                        className={`py-1 text-[10px] font-semibold rounded-lg transition-all border ${
+                          (styles.borderRadius ?? 12) === preset.value
+                            ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
+                            : 'bg-zinc-50 text-dark-secondary border-border hover:bg-zinc-100 hover:text-dark-primary'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Image Border Radius (when image is displayed) */}
+                {(content.display || 'image-text-price') === 'image-text-price' && (
+                  <div className="space-y-1.5 pt-2 border-t border-border/70">
+                    <div className="flex items-center justify-between text-dark-secondary">
+                      <span className="font-semibold text-dark-primary text-xs">ความโค้งมนของรูปภาพ (Image Radius)</span>
+                      <span className="font-mono text-xs font-bold text-dark-primary">
+                        {(styles.imageBorderRadius ?? (styles.borderRadius !== undefined ? Math.max(0, styles.borderRadius - 2) : 8)) === 999
+                          ? 'วงกลม'
+                          : `${styles.imageBorderRadius ?? (styles.borderRadius !== undefined ? Math.max(0, styles.borderRadius - 2) : 8)}px`}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min="0"
+                        max="32"
+                        value={
+                          styles.imageBorderRadius === 999
+                            ? 32
+                            : (styles.imageBorderRadius ?? (styles.borderRadius !== undefined ? Math.max(0, styles.borderRadius - 2) : 8))
+                        }
+                        onChange={(e) => handleStyleChange('imageBorderRadius', parseInt(e.target.value) || 0)}
+                        className="flex-1 accent-primary-500 cursor-pointer"
+                      />
+                      <input
+                        type="number"
+                        min="0"
+                        max="999"
+                        value={styles.imageBorderRadius ?? (styles.borderRadius !== undefined ? Math.max(0, styles.borderRadius - 2) : 8)}
+                        onChange={(e) => handleStyleChange('imageBorderRadius', parseInt(e.target.value) || 0)}
+                        className="w-14 p-1.5 bg-zinc-50 border border-border rounded-lg text-xs font-mono text-center focus:outline-none focus:border-primary-500"
+                      />
+                    </div>
+                    {/* Image Presets */}
+                    <div className="grid grid-cols-5 gap-1 pt-0.5">
+                      {[
+                        { label: '0 px', value: 0 },
+                        { label: '6 px', value: 6 },
+                        { label: '10 px', value: 10 },
+                        { label: '14 px', value: 14 },
+                        { label: 'วงกลม', value: 999 },
+                      ].map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => handleStyleChange('imageBorderRadius', preset.value)}
+                          className={`py-1 text-[10px] font-semibold rounded-lg transition-all border ${
+                            (styles.imageBorderRadius ?? (styles.borderRadius !== undefined ? Math.max(0, styles.borderRadius - 2) : 8)) === preset.value
+                              ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
+                              : 'bg-zinc-50 text-dark-secondary border-border hover:bg-zinc-100 hover:text-dark-primary'
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

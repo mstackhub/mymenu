@@ -393,22 +393,29 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                           e.stopPropagation();
                           setSelectedProductForDetail(prod);
                         }}
-                        className="group rounded-none border p-3 flex gap-3.5 hover:shadow-xs transition-all cursor-pointer items-center"
+                        className="group border p-3 flex gap-3.5 hover:shadow-xs transition-all cursor-pointer items-center"
                         style={{
                           backgroundColor: menuTheme.cardBgColor || '#FFFFFF',
                           borderColor: menuTheme.cardBorderColor || '#E4E4E7',
-                          borderRadius: styles.borderRadius ? `${styles.borderRadius}px` : '0px',
+                          borderRadius: styles.borderRadius !== undefined ? `${styles.borderRadius}px` : '12px',
                         }}
                       >
                         {/* Product Image */}
                         <div
-                          className={`relative w-20 h-20 flex-shrink-0 overflow-hidden bg-zinc-100 rounded-none ${
+                          className={`relative w-20 h-20 flex-shrink-0 overflow-hidden bg-zinc-100 ${
                             styles.imageRatio === '4:5'
                               ? 'aspect-[4/5] h-24'
                               : styles.imageRatio === '16:9'
                               ? 'aspect-video w-24'
                               : 'aspect-square'
                           }`}
+                          style={{
+                            borderRadius: styles.imageBorderRadius !== undefined
+                              ? (styles.imageBorderRadius === 999 ? '9999px' : `${styles.imageBorderRadius}px`)
+                              : styles.borderRadius !== undefined
+                              ? `${Math.max(0, styles.borderRadius - 2)}px`
+                              : '8px',
+                          }}
                         >
                           <img
                             src={prod.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&fit=crop'}

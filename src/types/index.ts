@@ -96,6 +96,7 @@ export interface SectionStyles {
   aspectRatio?: 'original' | '1:1' | '4:5' | '16:9';
   objectFit?: 'cover' | 'contain';
   borderRadius?: number;
+  imageBorderRadius?: number;
   alignment?: 'left' | 'center' | 'right';
   backgroundColor?: string;
   
