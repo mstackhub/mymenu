@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { UtensilsCrossed, Lock, Mail, User, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import { UtensilsCrossed, Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 
 export default function LoginPage() {
@@ -163,18 +163,6 @@ export default function LoginPage() {
             <span>{mode === 'login' ? 'เข้าสู่ระบบ' : 'ลงทะเบียนและเริ่มสร้างเมนู'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-
-          {/* Quick Demo Login Option */}
-          <div className="pt-3 border-t border-border/80">
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              className="w-full py-2.5 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-primary-500" />
-              <span>เข้าสู่ระบบตัวอย่างทันที (One-Click Demo)</span>
-            </button>
-          </div>
         </form>
       </div>
     </div>
