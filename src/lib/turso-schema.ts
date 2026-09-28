@@ -1,7 +1,7 @@
 import { turso } from './turso';
 
 export async function initTursoTables() {
-  await turso.executeMultiple(`
+  await turso.execute(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -11,7 +11,9 @@ export async function initTursoTables() {
       created_at TEXT,
       updated_at TEXT
     );
+  `);
 
+  await turso.execute(`
     CREATE TABLE IF NOT EXISTS stores (
       id TEXT PRIMARY KEY,
       owner_id TEXT,
@@ -27,7 +29,9 @@ export async function initTursoTables() {
       created_at TEXT,
       updated_at TEXT
     );
+  `);
 
+  await turso.execute(`
     CREATE TABLE IF NOT EXISTS categories (
       id TEXT PRIMARY KEY,
       store_id TEXT,
@@ -37,7 +41,9 @@ export async function initTursoTables() {
       created_at TEXT,
       updated_at TEXT
     );
+  `);
 
+  await turso.execute(`
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       store_id TEXT,
@@ -53,7 +59,9 @@ export async function initTursoTables() {
       created_at TEXT,
       updated_at TEXT
     );
+  `);
 
+  await turso.execute(`
     CREATE TABLE IF NOT EXISTS menus (
       id TEXT PRIMARY KEY,
       store_id TEXT,
