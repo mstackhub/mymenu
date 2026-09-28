@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { turso, isTursoConfigured } from '@/lib/turso';
 import { Store, Category, Product, Menu } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   req: Request,
   { params }: { params: { slug: string } }
@@ -90,20 +93,27 @@ export async function GET(
         slug: String(m.slug || store.slug),
         status: (m.status as any) || 'published',
         published_at: m.published_at ? String(m.published_at) : null,
-        theme: m.theme ? JSON.parse(String(m.theme)) : undefined,
-        sections: m.sections ? JSON.parse(String(m.sections)) : [],
+        theme: m.theme ? (typeof m.theme === 'string' ? JSON.parse(m.theme) : m.theme) : undefined,
+        sections: m.sections ? (typeof m.sections === 'string' ? JSON.parse(m.sections) : m.sections) : [],
         created_at: String(m.created_at || new Date().toISOString()),
         updated_at: String(m.updated_at),
       };
     }
 
-    return NextResponse.json({
-      success: true,
-      store,
-      menu,
-      categories,
-      products,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        store,
+        menu,
+        categories,
+        products,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('Turso public menu GET error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

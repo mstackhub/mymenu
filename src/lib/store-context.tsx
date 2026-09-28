@@ -146,12 +146,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const targetStore = dataOverride?.store || store;
       if (!targetStore || !targetStore.id) return;
 
+      const targetDraft = dataOverride?.draftMenu || draftMenu;
+      const targetPublished = dataOverride?.publishedMenu || targetDraft;
+
       const payload = {
         store: targetStore,
         categories: dataOverride?.categories || categories,
         products: dataOverride?.products || products,
-        draftMenu: dataOverride?.draftMenu || draftMenu,
-        publishedMenu: dataOverride?.publishedMenu || publishedMenu,
+        draftMenu: targetDraft,
+        publishedMenu: targetPublished,
       };
 
       await fetch('/api/db/sync', {
@@ -598,73 +601,89 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       styles: defaultStyles,
     };
 
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: [...(prev.sections || []), newSection],
+    const updated = {
+      ...draftMenu,
+      sections: [...(draftMenu.sections || []), newSection],
       updated_at: new Date().toISOString(),
-    }));
+    };
+    setDraftMenu(updated);
+    setPublishedMenu(updated);
     setSelectedSectionId(newId);
   };
 
   const updateSection = (id: string, updates: Partial<MenuSection>) => {
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: (prev.sections || []).map((sec) =>
-        sec.id === id ? { ...sec, ...updates, updated_at: new Date().toISOString() } : sec
-      ),
-      updated_at: new Date().toISOString(),
-    }));
+    setDraftMenu((prev) => {
+      const updated = {
+        ...prev,
+        sections: (prev.sections || []).map((sec) =>
+          sec.id === id ? { ...sec, ...updates, updated_at: new Date().toISOString() } : sec
+        ),
+        updated_at: new Date().toISOString(),
+      };
+      setPublishedMenu(updated);
+      return updated;
+    });
   };
 
   const updateSectionStyles = (id: string, styles: Partial<SectionStyles>) => {
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: (prev.sections || []).map((sec) =>
-        sec.id === id
-          ? {
-              ...sec,
-              styles: {
-                ...sec.styles,
-                ...styles,
-                margin: styles.margin
-                  ? { ...(sec.styles.margin || { top: 0, right: 0, bottom: 0, left: 0 }), ...styles.margin }
-                  : sec.styles.margin,
-                padding: styles.padding
-                  ? { ...(sec.styles.padding || { top: 0, right: 0, bottom: 0, left: 0 }), ...styles.padding }
-                  : sec.styles.padding,
-              },
-              updated_at: new Date().toISOString(),
-            }
-          : sec
-      ),
-      updated_at: new Date().toISOString(),
-    }));
+    setDraftMenu((prev) => {
+      const updated = {
+        ...prev,
+        sections: (prev.sections || []).map((sec) =>
+          sec.id === id
+            ? {
+                ...sec,
+                styles: {
+                  ...sec.styles,
+                  ...styles,
+                  margin: styles.margin
+                    ? { ...(sec.styles.margin || { top: 0, right: 0, bottom: 0, left: 0 }), ...styles.margin }
+                    : sec.styles.margin,
+                  padding: styles.padding
+                    ? { ...(sec.styles.padding || { top: 0, right: 0, bottom: 0, left: 0 }), ...styles.padding }
+                    : sec.styles.padding,
+                },
+                updated_at: new Date().toISOString(),
+              }
+            : sec
+        ),
+        updated_at: new Date().toISOString(),
+      };
+      setPublishedMenu(updated);
+      return updated;
+    });
   };
 
   const updateSectionContent = (id: string, content: any) => {
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: (prev.sections || []).map((sec) =>
-        sec.id === id
-          ? {
-              ...sec,
-              content: { ...sec.content, ...content },
-              updated_at: new Date().toISOString(),
-            }
-          : sec
-      ),
-      updated_at: new Date().toISOString(),
-    }));
+    setDraftMenu((prev) => {
+      const updated = {
+        ...prev,
+        sections: (prev.sections || []).map((sec) =>
+          sec.id === id
+            ? {
+                ...sec,
+                content: { ...sec.content, ...content },
+                updated_at: new Date().toISOString(),
+              }
+            : sec
+        ),
+        updated_at: new Date().toISOString(),
+      };
+      setPublishedMenu(updated);
+      return updated;
+    });
   };
 
   const deleteSection = (id: string) => {
     setDraftMenu((prev) => {
       const remaining = (prev.sections || []).filter((sec) => sec.id !== id);
-      return {
+      const updated = {
         ...prev,
         sections: remaining,
         updated_at: new Date().toISOString(),
       };
+      setPublishedMenu(updated);
+      return updated;
     });
     if (selectedSectionId === id) {
       setSelectedSectionId(null);
@@ -682,24 +701,28 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: [...(prev.sections || []), duplicated],
+    const updated = {
+      ...draftMenu,
+      sections: [...(draftMenu.sections || []), duplicated],
       updated_at: new Date().toISOString(),
-    }));
+    };
+    setDraftMenu(updated);
+    setPublishedMenu(updated);
     setSelectedSectionId(newId);
   };
 
   const reorderSections = (newSections: MenuSection[]) => {
-    const updated = newSections.map((sec, index) => ({
+    const updatedSections = newSections.map((sec, index) => ({
       ...sec,
       sort_order: index + 1,
     }));
-    setDraftMenu((prev) => ({
-      ...prev,
-      sections: updated,
+    const updated = {
+      ...draftMenu,
+      sections: updatedSections,
       updated_at: new Date().toISOString(),
-    }));
+    };
+    setDraftMenu(updated);
+    setPublishedMenu(updated);
   };
 
   const saveDraftMenu = () => {
@@ -743,11 +766,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         ...currentTheme,
         ...themeUpdates,
       };
-      return {
+      const updated = {
         ...prev,
         theme: newTheme,
         updated_at: new Date().toISOString(),
       };
+      setPublishedMenu(updated);
+      return updated;
     });
   };
 

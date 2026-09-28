@@ -255,7 +255,9 @@ export async function POST(req: Request) {
       });
     }
 
-    if (publishedMenu) {
+    // Always keep published-menu row in sync with latest theme and sections
+    const activeMenu = publishedMenu || draftMenu;
+    if (activeMenu) {
       await turso.execute({
         sql: `INSERT INTO menus (id, store_id, name, slug, status, published_at, theme, sections, created_at, updated_at)
               VALUES (?, ?, ?, ?, 'published', ?, ?, ?, ?, ?)
@@ -267,14 +269,14 @@ export async function POST(req: Request) {
                 sections = excluded.sections,
                 updated_at = excluded.updated_at`,
         args: [
-          'published-' + (publishedMenu.id || 'menu'),
+          'published-' + (activeMenu.id || 'menu'),
           store.id,
-          publishedMenu.name || store.name,
-          publishedMenu.slug || store.slug,
-          publishedMenu.published_at || new Date().toISOString(),
-          JSON.stringify(publishedMenu.theme || {}),
-          JSON.stringify(publishedMenu.sections || []),
-          publishedMenu.created_at || new Date().toISOString(),
+          activeMenu.name || store.name,
+          activeMenu.slug || store.slug,
+          activeMenu.published_at || new Date().toISOString(),
+          JSON.stringify(activeMenu.theme || {}),
+          JSON.stringify(activeMenu.sections || []),
+          activeMenu.created_at || new Date().toISOString(),
           new Date().toISOString(),
         ],
       });
