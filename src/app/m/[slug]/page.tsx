@@ -747,7 +747,7 @@ export default function PublicMenuPage() {
                             type="button"
                             onClick={(e) => handleQuickAddNote(prod, e)}
                             className="w-7 h-7 bg-orange-50 hover:bg-primary-500 text-primary-600 hover:text-white rounded-lg flex items-center justify-center transition-all border border-orange-200/80 shadow-2xs flex-shrink-0 ml-2"
-                            title="จดเมนูนี้"
+                            title="เพิ่มลงรายการ"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -836,7 +836,7 @@ export default function PublicMenuPage() {
                         type="button"
                         onClick={(e) => handleQuickAddNote(prod, e)}
                         className="w-6 h-6 bg-zinc-100 hover:bg-primary-500 text-dark-secondary hover:text-white rounded flex items-center justify-center transition-all"
-                        title="จดเมนูนี้"
+                        title="เพิ่มลงรายการ"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -1134,7 +1134,7 @@ export default function PublicMenuPage() {
                 onClick={handleAddNoteItem}
                 className="flex-1 py-3 px-4 bg-primary-500 hover:bg-primary-600 active:scale-[0.99] text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-between"
               >
-                <span>จดเมนูนี้ ({modalQuantity} รายการ)</span>
+                <span>เพิ่มลงรายการ ({modalQuantity} รายการ)</span>
                 <span className="font-mono font-extrabold text-sm">
                   ฿{modalTotalPrice.toLocaleString()}
                 </span>

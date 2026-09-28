@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   MessageSquare,
+  UtensilsCrossed,
+  ClipboardList,
   Copy,
   Check,
   Trash2,
@@ -205,10 +207,10 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
           type="button"
           onClick={onToggleOpen}
           className="group relative flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-[#FF5A36] to-[#FF7A59] hover:from-[#E04826] hover:to-[#FF5A36] text-white font-bold rounded-full shadow-xl hover:shadow-2xl active:scale-95 transition-all duration-200 border-2 border-white/40"
-          aria-label="รายการที่จด"
+          aria-label="รายการเมนู"
         >
           <div className="relative">
-            <MessageSquare className="w-5 h-5 text-white" />
+            <UtensilsCrossed className="w-5 h-5 text-white" />
             {totalItemsCount > 0 && (
               <span className="absolute -top-2.5 -right-2.5 w-5 h-5 bg-zinc-900 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center border-2 border-white animate-bounce">
                 {totalItemsCount}
@@ -216,7 +218,7 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
             )}
           </div>
           <span className="text-sm font-display tracking-tight pr-1">
-            {totalItemsCount > 0 ? `จดเมนูไว้ (${totalItemsCount})` : 'จดเมนูอาหาร'}
+            {totalItemsCount > 0 ? `รายการเมนู (${totalItemsCount})` : 'รายการเมนู'}
           </span>
           {totalItemsCount > 0 && (
             <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-semibold">
@@ -240,11 +242,11 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
             <div className="p-4 sm:p-5 bg-white text-dark-primary border-b border-border/80 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-primary-500 shadow-2xs">
-                  <MessageSquare className="w-5 h-5" />
+                  <UtensilsCrossed className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm sm:text-base font-display text-dark-primary flex items-center gap-1.5">
-                    <span>รายการของฉันวันนี้</span>
+                    <span>รายการเมนู</span>
                   </h3>
                   <p className="text-[11px] text-dark-secondary flex items-center gap-1.5 mt-0.5">
                     <span>{currentDateStr || 'วันนี้'}</span>
@@ -293,9 +295,9 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
                   <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto text-zinc-400">
                     <ShoppingBag className="w-6 h-6" />
                   </div>
-                  <p className="font-semibold text-sm text-dark-primary">ยังไม่มีรายการที่จดไว้</p>
+                  <p className="font-semibold text-sm text-dark-primary">ยังไม่มีรายการเมนูที่เลือกไว้</p>
                   <p className="text-xs text-dark-secondary max-w-xs mx-auto">
-                    คลิกเลือกเมนูอาหารเพื่อเลือกขนาด ตัวเลือกเสริม แล้วกด "จดรายการนี้" ได้เลยครับ
+                    คลิกเลือกเมนูอาหารเพื่อเลือกขนาด ตัวเลือกเสริม แล้วกด "เพิ่มลงรายการ" ได้เลยครับ
                   </p>
                 </div>
               ) : (
