@@ -37,7 +37,7 @@ export interface NoteItem {
 }
 
 interface CustomerNoteChatProps {
-  store: Store;
+  store?: Store | any;
   notedItems: NoteItem[];
   onUpdateQuantity: (id: string, delta: number) => void;
   onUpdateNote?: (id: string, note: string) => void;
@@ -149,7 +149,7 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
       text += `ชื่อบัญชี: ${bankAccountName}\n`;
       text += `เลขที่บัญชี: ${bankAccountNumber}\n`;
       if (store?.promptpay_number) {
-        text += `พร้อมเพย์: ${store.promptpay_number}\n`;
+        text += `พร้อมเพย์: ${store?.promptpay_number}\n`;
       }
     }
 
