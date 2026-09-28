@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import {
   Palette,
   Check,
-  Sparkles,
   Maximize2,
   Image as ImageIcon,
   Sun,
@@ -64,14 +63,11 @@ export const ThemeSettingsPanel: React.FC = () => {
   return (
     <div className="space-y-6 select-none">
       {/* Header Info */}
-      <div className="p-3 bg-orange-50 border border-orange-200/70 rounded-2xl flex items-start gap-2.5">
-        <Sparkles className="w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0" />
-        <div>
-          <p className="text-xs font-bold text-dark-primary">Template พื้นหลัง & ธีมเมนู</p>
-          <p className="text-[11px] text-dark-secondary mt-0.5 leading-relaxed">
-            เลือกเทมเพลตสำเร็จรูป หรือปรับแต่งพื้นหลังและโทนสีของเมนูอาหารทั้งหน้าได้ทันที
-          </p>
-        </div>
+      <div className="p-3 bg-orange-50 border border-orange-200/70 rounded-2xl">
+        <p className="text-xs font-bold text-dark-primary">Template พื้นหลัง & ธีมเมนู</p>
+        <p className="text-[11px] text-dark-secondary mt-0.5 leading-relaxed">
+          เลือกเทมเพลตสำเร็จรูป หรือปรับแต่งพื้นหลังและโทนสีของเมนูอาหารทั้งหน้าได้ทันที
+        </p>
       </div>
 
       {/* Preset Categories Switcher */}
