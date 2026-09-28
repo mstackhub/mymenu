@@ -92,7 +92,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                     </span>
                   </div>
                   <p className="text-[10px] text-dark-secondary truncate max-w-[120px]">
-                    {store.name}
+                    {store?.name || 'ร้านของฉัน'}
                   </p>
                 </div>
               )}
@@ -111,7 +111,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
           {/* Store Quick Preview Badge (Fully Clickable) */}
           {!isCollapsed ? (
             <a
-              href={`/m/${store.slug}`}
+              href={`/m/${store?.slug || 'store'}`}
               target="_blank"
               rel="noreferrer"
               className="mt-3 p-2.5 bg-gradient-to-r from-orange-50/80 to-amber-50/60 hover:from-orange-100 hover:to-amber-100 rounded-xl border border-orange-200/80 flex items-center justify-between transition-all group cursor-pointer shadow-2xs block"
@@ -123,7 +123,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
                   <span className="text-[10px] font-bold text-primary-700">ดูเว็บไซต์ร้าน (Live)</span>
                 </div>
                 <span className="text-[11px] font-mono font-semibold text-dark-primary group-hover:text-primary-600 truncate block mt-0.5">
-                  /m/{store.slug}
+                  /m/{store?.slug || 'store'}
                 </span>
               </div>
               <div className="p-1 rounded-lg bg-white border border-orange-200 text-primary-600 group-hover:bg-primary-500 group-hover:text-white transition-all shadow-xs flex-shrink-0">
@@ -132,11 +132,11 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
             </a>
           ) : (
             <a
-              href={`/m/${store.slug}`}
+              href={`/m/${store?.slug || 'store'}`}
               target="_blank"
               rel="noreferrer"
               className="mt-3 p-2 bg-orange-50 hover:bg-orange-100 rounded-xl border border-orange-200 text-primary-600 flex items-center justify-center transition-all shadow-2xs"
-              title={`ดูเว็บไซต์ร้าน (/m/${store.slug})`}
+              title={`ดูเว็บไซต์ร้าน (/m/${store?.slug || 'store'})`}
             >
               <ExternalLink className="w-4 h-4" />
             </a>

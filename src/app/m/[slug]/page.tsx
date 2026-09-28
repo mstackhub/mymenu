@@ -168,20 +168,24 @@ export default function PublicMenuPage() {
 
   // Load saved notes from LocalStorage on mount
   useEffect(() => {
+    const noteKey = slug || store?.slug;
+    if (!noteKey) return;
     try {
-      const saved = localStorage.getItem(`mymenu_note_${slug || store.slug}`);
+      const saved = localStorage.getItem(`mymenu_note_${noteKey}`);
       if (saved) {
         setNotedItems(JSON.parse(saved));
       }
     } catch (e) {}
-  }, [slug, store.slug]);
+  }, [slug, store?.slug]);
 
   // Save notes to LocalStorage on change
   useEffect(() => {
+    const noteKey = slug || store?.slug;
+    if (!noteKey) return;
     try {
-      localStorage.setItem(`mymenu_note_${slug || store.slug}`, JSON.stringify(notedItems));
+      localStorage.setItem(`mymenu_note_${noteKey}`, JSON.stringify(notedItems));
     } catch (e) {}
-  }, [notedItems, slug, store.slug]);
+  }, [notedItems, slug, store?.slug]);
 
   // When selectedProduct opens, initialize default option selections
   useEffect(() => {
@@ -341,8 +345,8 @@ export default function PublicMenuPage() {
     if (typeof window !== 'undefined') {
       if (navigator.share) {
         navigator.share({
-          title: store.name,
-          text: `ดูเมนูอาหารออนไลน์ของร้าน ${store.name}`,
+          title: store?.name || 'MyMenu',
+          text: `ดูเมนูอาหารออนไลน์ของร้าน ${store?.name || 'ร้านอาหาร'}`,
           url: window.location.href,
         });
       } else {
@@ -416,7 +420,7 @@ export default function PublicMenuPage() {
         {/* 1. STORE NAME */}
         {type === 'store_name' && (
           <h1 style={typoStyle} className={`font-display ${sectionIdSafe}-typo`}>
-            {content.text || store.name}
+            {content.text || store?.name || ''}
           </h1>
         )}
 
@@ -432,8 +436,8 @@ export default function PublicMenuPage() {
             }`}
           >
             <img
-              src={content.url || store.logo_url || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&fit=crop'}
-              alt={store.name}
+              src={content.url || store?.logo_url || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&fit=crop'}
+              alt={store?.name || 'Store Logo'}
               style={{
                 width: styles.width ? `${styles.width}px` : '80px',
                 height: styles.width ? `${styles.width}px` : '80px',
@@ -447,7 +451,7 @@ export default function PublicMenuPage() {
         {/* 3. DESCRIPTION */}
         {type === 'description' && (
           <p style={typoStyle} className={sectionIdSafe + '-typo'}>
-            {content.text || store.description}
+            {content.text || store?.description || ''}
           </p>
         )}
 
@@ -917,7 +921,7 @@ export default function PublicMenuPage() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-dark-muted" />
           <input
             type="text"
-            placeholder={`ค้นหาเมนูใน ${store.name}...`}
+            placeholder={`ค้นหาเมนูใน ${store?.name || 'ร้าน'}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-primary-500 transition-all border"

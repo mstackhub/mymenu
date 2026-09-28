@@ -95,9 +95,9 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
   const totalAmount = notedItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
   // Bank Info Fallbacks
-  const bankName = store.bank_name || 'SCB (ไทยพาณิชย์)';
-  const bankAccountName = store.bank_account_name || 'Mark';
-  const bankAccountNumber = store.bank_account_number || '44324343244';
+  const bankName = store?.bank_name || 'SCB (ไทยพาณิชย์)';
+  const bankAccountName = store?.bank_account_name || 'Mark';
+  const bankAccountNumber = store?.bank_account_number || '44324343244';
 
   const handleSaveItemNote = (id: string) => {
     if (onUpdateNote) {
@@ -116,7 +116,7 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
     const time = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
 
     let text = `📝 รายการของฉันวันนี้ (${day}/${month}/${year} ${time})\n`;
-    text += `🏪 ร้าน: ${store.name}\n`;
+    text += `🏪 ร้าน: ${store?.name || 'ร้านอาหาร'}\n`;
     text += `--------------------------------\n`;
     text += `จำนวนที่สั่ง ${totalItemsCount} รายการ\n\n`;
 
@@ -148,7 +148,7 @@ export const CustomerNoteChat: React.FC<CustomerNoteChatProps> = ({
       text += `ธนาคาร: ${bankName}\n`;
       text += `ชื่อบัญชี: ${bankAccountName}\n`;
       text += `เลขที่บัญชี: ${bankAccountNumber}\n`;
-      if (store.promptpay_number) {
+      if (store?.promptpay_number) {
         text += `พร้อมเพย์: ${store.promptpay_number}\n`;
       }
     }

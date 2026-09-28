@@ -34,7 +34,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-3">
             <Link
-              href={`/m/${store.slug}`}
+              href={`/m/${store?.slug || 'somtum-house'}`}
               target="_blank"
               className="px-4 py-2 text-xs font-semibold text-dark-secondary hover:text-dark-primary hover:bg-zinc-100 rounded-xl transition-colors"
             >
@@ -76,7 +76,7 @@ export default function HomePage() {
             <span>เข้าสู่ Menu Builder</span>
           </Link>
           <Link
-            href={`/m/${store.slug}`}
+            href={`/m/${store?.slug || 'somtum-house'}`}
             className="px-6 py-3.5 bg-white border border-border hover:bg-zinc-50 text-dark-primary font-semibold text-sm rounded-2xl shadow-xs transition-all flex items-center gap-2"
           >
             <QrCode className="w-4 h-4 text-primary-500" />
