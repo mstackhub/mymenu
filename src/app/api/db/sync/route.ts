@@ -2,13 +2,31 @@ import { NextResponse } from 'next/server';
 import { turso, isTursoConfigured } from '@/lib/turso';
 import { Store, Category, Product, Menu } from '@/types';
 
-export async function GET() {
+export async function GET(req: Request) {
   if (!isTursoConfigured) {
     return NextResponse.json({ success: false, error: 'Turso not configured' }, { status: 400 });
   }
 
   try {
-    const storeRes = await turso.execute('SELECT * FROM stores LIMIT 1');
+    const { searchParams } = new URL(req.url);
+    const storeIdParam = searchParams.get('store_id');
+    const userIdParam = searchParams.get('user_id');
+
+    let storeRes;
+    if (storeIdParam) {
+      storeRes = await turso.execute({
+        sql: 'SELECT * FROM stores WHERE id = ? LIMIT 1',
+        args: [storeIdParam],
+      });
+    } else if (userIdParam) {
+      storeRes = await turso.execute({
+        sql: 'SELECT * FROM stores WHERE owner_id = ? LIMIT 1',
+        args: [userIdParam],
+      });
+    } else {
+      storeRes = await turso.execute('SELECT * FROM stores LIMIT 1');
+    }
+
     if (storeRes.rows.length === 0) {
       return NextResponse.json({ success: true, empty: true });
     }

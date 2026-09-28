@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { UtensilsCrossed, Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
+import { UtensilsCrossed, Lock, Mail, User, Store, ArrowRight, AlertCircle } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 
 export default function LoginPage() {
@@ -11,9 +11,10 @@ export default function LoginPage() {
   const { login, signup, user } = useStore();
 
   const [mode, setMode] = useState<'login' | 'signup'>('login');
-  const [email, setEmail] = useState('owner@somtumhouse.com');
-  const [password, setPassword] = useState('password123');
-  const [name, setName] = useState('Somtum House Owner');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [storeName, setStoreName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,28 +28,18 @@ export default function LoginPage() {
         const ok = await login(email, password);
         if (ok) {
           router.push('/admin');
-        } else {
-          setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
         }
       } else {
-        const ok = await signup(email, password, name);
+        const ok = await signup(email, password, name, storeName);
         if (ok) {
           router.push('/admin');
-        } else {
-          setError('ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่อีกครั้ง');
         }
       }
     } catch (err: any) {
-      setError(err.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+      setError(err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    await login('owner@somtumhouse.com', 'demo1234');
-    router.push('/admin');
   };
 
   return (
@@ -109,20 +100,37 @@ export default function LoginPage() {
           )}
 
           {mode === 'signup' && (
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-dark-secondary">ชื่อผู้ดูแลร้าน</label>
-              <div className="relative">
-                <User className="w-4 h-4 text-dark-muted absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="เช่น สมชาย ใจดี"
-                  className="w-full pl-9 pr-3 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
-                />
+            <>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-dark-secondary">ชื่อร้านอาหาร (Restaurant / Store Name)</label>
+                <div className="relative">
+                  <Store className="w-4 h-4 text-dark-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    required
+                    value={storeName}
+                    onChange={(e) => setStoreName(e.target.value)}
+                    placeholder="เช่น ครัวคุณแม่, Somtum Zap, Cafe Craft"
+                    className="w-full pl-9 pr-3 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                  />
+                </div>
               </div>
-            </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-dark-secondary">ชื่อผู้ดูแลร้าน (Owner Name)</label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-dark-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="เช่น สมชาย ใจดี"
+                    className="w-full pl-9 pr-3 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                  />
+                </div>
+              </div>
+            </>
           )}
 
           <div className="space-y-1">
@@ -134,7 +142,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="owner@restaurant.com"
+                placeholder="owner@yourrestaurant.com"
                 className="w-full pl-9 pr-3 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
               />
             </div>

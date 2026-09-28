@@ -26,6 +26,7 @@ interface UserProfile {
   id: string;
   email: string;
   name: string;
+  store_id?: string;
 }
 
 interface StoreContextType {
@@ -34,7 +35,7 @@ interface StoreContextType {
   isLoading: boolean;
   login: (email: string, pass: string) => Promise<boolean>;
   logout: () => void;
-  signup: (email: string, pass: string, name: string) => Promise<boolean>;
+  signup: (email: string, pass: string, name: string, storeName?: string) => Promise<boolean>;
 
   // Store
   store: Store;
@@ -170,17 +171,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       let initialPublished = DEFAULT_MENU;
 
       try {
-        const savedUser = localStorage.getItem(STORAGE_KEY_USER);
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
-        } else {
-          const demoUser: UserProfile = {
-            id: 'user-001',
-            email: 'owner@somtumhouse.com',
-            name: 'Somtum House Owner',
-          };
-          setUser(demoUser);
-          localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(demoUser));
+        const savedUserStr = localStorage.getItem(STORAGE_KEY_USER);
+        let activeUser: UserProfile | null = null;
+        if (savedUserStr) {
+          try {
+            activeUser = JSON.parse(savedUserStr);
+            setUser(activeUser);
+          } catch (e) {}
         }
 
         const savedStore = localStorage.getItem(STORAGE_KEY_STORE);
@@ -221,13 +218,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // Initialize Turso & fetch cloud data
         await fetch('/api/db/init', { method: 'POST' });
-        const syncRes = await fetch('/api/db/sync');
+        const syncUrl = activeUser ? `/api/db/sync?user_id=${activeUser.id}&store_id=${activeUser.store_id || ''}` : '/api/db/sync';
+        const syncRes = await fetch(syncUrl);
         if (syncRes.ok) {
           const dbData = await syncRes.json();
           if (dbData.success && dbData.store) {
             setStore(dbData.store);
-            if (dbData.categories?.length) setCategories(dbData.categories);
-            if (dbData.products?.length) setProducts(dbData.products);
+            setCategories(dbData.categories || []);
+            setProducts(dbData.products || []);
             if (dbData.draftMenu) setDraftMenu(dbData.draftMenu);
             if (dbData.publishedMenu) setPublishedMenu(dbData.publishedMenu);
           } else if (dbData.empty) {
@@ -300,79 +298,73 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const login = async (email: string, pass: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      if (isSupabaseConfigured && supabase) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password: pass,
-        });
-        if (error) throw error;
-        if (data.user) {
-          const userObj: UserProfile = {
-            id: data.user.id,
-            email: data.user.email || email,
-            name: data.user.user_metadata?.name || email.split('@')[0],
-          };
-          setUser(userObj);
-          localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userObj));
-          return true;
-        }
-      } else {
-        // Mock login
-        const userObj: UserProfile = {
-          id: 'user-' + Date.now(),
-          email,
-          name: email.split('@')[0],
-        };
-        setUser(userObj);
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userObj));
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setUser(data.user);
+        setStore(data.store);
+        setCategories(data.categories || []);
+        setProducts(data.products || []);
+        if (data.draftMenu) setDraftMenu(data.draftMenu);
+        if (data.publishedMenu) setPublishedMenu(data.publishedMenu);
+
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(data.user));
+        localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(data.store));
+        localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(data.categories || []));
+        localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(data.products || []));
+        if (data.draftMenu) localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(data.draftMenu));
+        if (data.publishedMenu) localStorage.setItem(STORAGE_KEY_PUBLISHED_MENU, JSON.stringify(data.publishedMenu));
         return true;
+      } else {
+        throw new Error(data.error || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login error:', err);
-      return false;
+      throw err;
     } finally {
       setIsLoading(false);
     }
-    return false;
   };
 
-  const signup = async (email: string, pass: string, name: string): Promise<boolean> => {
+  const signup = async (email: string, pass: string, name: string, storeName?: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      if (isSupabaseConfigured && supabase) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password: pass,
-          options: { data: { name } },
-        });
-        if (error) throw error;
-        if (data.user) {
-          const userObj: UserProfile = {
-            id: data.user.id,
-            email: data.user.email || email,
-            name,
-          };
-          setUser(userObj);
-          localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userObj));
-          return true;
-        }
-      } else {
-        const userObj: UserProfile = {
-          id: 'user-' + Date.now(),
-          email,
-          name,
-        };
-        setUser(userObj);
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userObj));
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass, name, storeName }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        // Fresh clean store for new user without fake products
+        setUser(data.user);
+        setStore(data.store);
+        setCategories([]);
+        setProducts([]);
+        if (data.draftMenu) setDraftMenu(data.draftMenu);
+        setPublishedMenu(data.draftMenu);
+
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(data.user));
+        localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(data.store));
+        localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify([]));
+        localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify([]));
+        if (data.draftMenu) localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(data.draftMenu));
         return true;
+      } else {
+        throw new Error(data.error || 'ไม่สามารถลงทะเบียนได้');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Signup error:', err);
-      return false;
+      throw err;
     } finally {
       setIsLoading(false);
     }
-    return false;
   };
 
   const logout = () => {
@@ -381,6 +373,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
     setUser(null);
     localStorage.removeItem(STORAGE_KEY_USER);
+    localStorage.removeItem(STORAGE_KEY_STORE);
+    localStorage.removeItem(STORAGE_KEY_CATEGORIES);
+    localStorage.removeItem(STORAGE_KEY_PRODUCTS);
+    localStorage.removeItem(STORAGE_KEY_DRAFT_MENU);
+    localStorage.removeItem(STORAGE_KEY_PUBLISHED_MENU);
   };
 
   // Helper to generate slug from store name

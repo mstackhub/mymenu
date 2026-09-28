@@ -2,6 +2,16 @@ import { turso } from './turso';
 
 export async function initTursoTables() {
   await turso.executeMultiple(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      name TEXT,
+      store_id TEXT,
+      created_at TEXT,
+      updated_at TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS stores (
       id TEXT PRIMARY KEY,
       owner_id TEXT,
