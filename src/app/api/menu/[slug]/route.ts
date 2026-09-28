@@ -76,7 +76,7 @@ export async function GET(
     }));
 
     const menuRes = await turso.execute({
-      sql: "SELECT * FROM menus WHERE store_id = ? ORDER BY CASE WHEN status = 'published' THEN 1 ELSE 2 END, updated_at DESC LIMIT 1",
+      sql: "SELECT * FROM menus WHERE store_id = ? ORDER BY updated_at DESC LIMIT 1",
       args: [store.id],
     });
 

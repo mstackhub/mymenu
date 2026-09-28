@@ -703,14 +703,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const saveDraftMenu = () => {
-    const updated = {
+    const now = new Date().toISOString();
+    const updated: Menu = {
       ...draftMenu,
-      status: 'draft' as const,
-      updated_at: new Date().toISOString(),
+      slug: store.slug,
+      updated_at: now,
     };
     setDraftMenu(updated);
+    setPublishedMenu(updated);
     localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(updated));
-    syncToTurso({ draftMenu: updated });
+    localStorage.setItem(STORAGE_KEY_PUBLISHED_MENU, JSON.stringify(updated));
+    syncToTurso({ draftMenu: updated, publishedMenu: updated });
   };
 
   const publishMenu = () => {
@@ -723,10 +726,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updated_at: now,
     };
     setPublishedMenu(published);
-    setDraftMenu((prev) => ({ ...prev, status: 'published', published_at: now }));
+    setDraftMenu(published);
     localStorage.setItem(STORAGE_KEY_PUBLISHED_MENU, JSON.stringify(published));
     localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(published));
-    syncToTurso({ publishedMenu: published, draftMenu: { ...draftMenu, status: 'published', published_at: now } });
+    syncToTurso({ publishedMenu: published, draftMenu: published });
   };
 
   const updateMenuTheme = (themeUpdates: Partial<MenuTheme>) => {
