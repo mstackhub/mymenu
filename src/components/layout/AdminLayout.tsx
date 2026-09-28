@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -21,7 +21,7 @@ import { useStore } from '@/lib/store-context';
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, store, logout } = useStore();
+  const { user, store, logout, isLoading } = useStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isBuilder = pathname === '/admin/builder';
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -33,6 +33,12 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { name: 'หมวดหมู่อาหาร', href: '/admin/categories', icon: Layers },
     { name: 'ข้อมูลร้าน', href: '/admin/store', icon: StoreIcon },
   ];
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, isLoading, router]);
 
   const handleLogout = () => {
     logout();

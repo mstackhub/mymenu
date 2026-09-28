@@ -17,7 +17,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
-import { MenuSection, Product, OptionGroup, ProductOption, MenuTheme } from '@/types';
+import { MenuSection, Product, Category, OptionGroup, ProductOption, MenuTheme } from '@/types';
 import { CustomerNoteChat, NoteItem, NoteItemOption } from '@/components/menu/CustomerNoteChat';
 
 export default function PublicMenuPage() {
@@ -25,40 +25,72 @@ export default function PublicMenuPage() {
   const slug = params?.slug as string;
   const { publishedMenu: localMenu, store: localStore, products: localProducts, categories: localCategories } = useStore();
 
-  const [store, setStore] = useState(localStore);
-  const [publishedMenu, setPublishedMenu] = useState(localMenu);
-  const [products, setProducts] = useState(localProducts);
-  const [categories, setCategories] = useState(localCategories);
-
-  useEffect(() => {
-    setStore(localStore);
-    setPublishedMenu(localMenu);
-    setProducts(localProducts);
-    setCategories(localCategories);
-  }, [localStore, localMenu, localProducts, localCategories]);
+  const [store, setStore] = useState<any>(null);
+  const [publishedMenu, setPublishedMenu] = useState<any>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
+    let isMounted = true;
+
     const fetchOnline = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(`/api/menu/${slug}`);
         if (res.ok) {
           const data = await res.json();
-          if (data.success) {
-            if (data.store) setStore(data.store);
-            if (data.menu) setPublishedMenu(data.menu);
-            if (data.products?.length) setProducts(data.products);
-            if (data.categories?.length) setCategories(data.categories);
+          if (data.success && data.store && isMounted) {
+            setStore(data.store);
+            setPublishedMenu(data.menu || null);
+            setProducts(data.products || []);
+            setCategories(data.categories || []);
+            setNotFound(false);
+            return;
           }
+        }
+        
+        // Fallback to local store ONLY if it matches the current slug (e.g. offline dev mode)
+        if (localStore?.slug === slug && isMounted) {
+          setStore(localStore);
+          setPublishedMenu(localMenu);
+          setProducts(localProducts || []);
+          setCategories(localCategories || []);
+          setNotFound(false);
+          return;
+        }
+
+        if (isMounted) {
+          setNotFound(true);
         }
       } catch (e) {
         console.warn('Could not fetch public menu from cloud API:', e);
+        if (localStore?.slug === slug && isMounted) {
+          setStore(localStore);
+          setPublishedMenu(localMenu);
+          setProducts(localProducts || []);
+          setCategories(localCategories || []);
+          setNotFound(false);
+        } else if (isMounted) {
+          setNotFound(true);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
+
     fetchOnline();
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
-  const menuTheme: MenuTheme = publishedMenu.theme || {
+  const menuTheme: MenuTheme = publishedMenu?.theme || {
     presetId: 'minimal-white',
     backgroundType: 'color',
     pageBgColor: '#FFFFFF',
@@ -301,7 +333,7 @@ export default function PublicMenuPage() {
   };
 
   // Filter sections
-  const sections = [...(publishedMenu.sections || [])].sort(
+  const sections = [...(publishedMenu?.sections || [])].sort(
     (a, b) => a.sort_order - b.sort_order
   );
 
@@ -814,6 +846,52 @@ export default function PublicMenuPage() {
       </div>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-zinc-200/80 shadow-sm space-y-6 animate-pulse">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-20 h-20 bg-zinc-200 rounded-2xl" />
+            <div className="w-44 h-6 bg-zinc-200 rounded-lg" />
+            <div className="w-28 h-4 bg-zinc-100 rounded-md" />
+          </div>
+          <div className="flex gap-2 justify-center py-2">
+            <div className="w-16 h-8 bg-zinc-200 rounded-full" />
+            <div className="w-20 h-8 bg-zinc-100 rounded-full" />
+            <div className="w-16 h-8 bg-zinc-100 rounded-full" />
+          </div>
+          <div className="space-y-3">
+            <div className="w-full h-24 bg-zinc-100 rounded-2xl" />
+            <div className="w-full h-24 bg-zinc-100 rounded-2xl" />
+            <div className="w-full h-24 bg-zinc-100 rounded-2xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !store) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4 text-center font-sans">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-zinc-200/80 shadow-sm">
+          <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Utensils className="w-8 h-8" />
+          </div>
+          <h1 className="text-xl font-bold text-zinc-900 mb-2 font-display">ไม่พบร้านค้าหรือเมนูนี้</h1>
+          <p className="text-xs text-zinc-500 mb-6">
+            ลิงก์เมนู <span className="font-mono text-orange-600 font-semibold">/m/{slug}</span> อาจยังไม่ได้เปิดใช้งาน หรือพิมพ์ที่อยู่ผิด
+          </p>
+          <a
+            href="/"
+            className="inline-flex items-center justify-center px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-xl transition-all shadow-xs"
+          >
+            กลับหน้าแรก
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const modalUnitPrice = calculateModalUnitPrice();
   const modalTotalPrice = modalUnitPrice * modalQuantity;

@@ -143,8 +143,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     publishedMenu?: Menu;
   }) => {
     try {
+      const targetStore = dataOverride?.store || store;
+      if (!targetStore || !targetStore.id) return;
+
       const payload = {
-        store: dataOverride?.store || store,
+        store: targetStore,
         categories: dataOverride?.categories || categories,
         products: dataOverride?.products || products,
         draftMenu: dataOverride?.draftMenu || draftMenu,
@@ -164,12 +167,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Load from localStorage or Turso on mount
   useEffect(() => {
     const initAndLoad = async () => {
-      let initialStore = DEFAULT_STORE;
-      let initialCats = DEFAULT_CATEGORIES;
-      let initialProds = DEFAULT_PRODUCTS;
-      let initialDraft = DEFAULT_MENU;
-      let initialPublished = DEFAULT_MENU;
-
       try {
         const savedUserStr = localStorage.getItem(STORAGE_KEY_USER);
         let activeUser: UserProfile | null = null;
@@ -182,61 +179,64 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         const savedStore = localStorage.getItem(STORAGE_KEY_STORE);
         if (savedStore) {
-          initialStore = JSON.parse(savedStore);
-          setStore(initialStore);
+          try {
+            setStore(JSON.parse(savedStore));
+          } catch (e) {}
         }
 
         const savedCats = localStorage.getItem(STORAGE_KEY_CATEGORIES);
         if (savedCats) {
-          initialCats = JSON.parse(savedCats);
-          setCategories(initialCats);
+          try {
+            setCategories(JSON.parse(savedCats));
+          } catch (e) {}
         }
 
         const savedProds = localStorage.getItem(STORAGE_KEY_PRODUCTS);
         if (savedProds) {
-          initialProds = JSON.parse(savedProds);
-          setProducts(initialProds);
+          try {
+            setProducts(JSON.parse(savedProds));
+          } catch (e) {}
         }
 
         const savedDraft = localStorage.getItem(STORAGE_KEY_DRAFT_MENU);
         if (savedDraft) {
-          const parsed = JSON.parse(savedDraft);
-          if (parsed.sections) parsed.sections = sanitizeSections(parsed.sections);
-          if (parsed.theme) parsed.theme = sanitizeTheme(parsed.theme);
-          initialDraft = parsed;
-          setDraftMenu(parsed);
+          try {
+            const parsed = JSON.parse(savedDraft);
+            if (parsed.sections) parsed.sections = sanitizeSections(parsed.sections);
+            if (parsed.theme) parsed.theme = sanitizeTheme(parsed.theme);
+            setDraftMenu(parsed);
+          } catch (e) {}
         }
 
         const savedPublished = localStorage.getItem(STORAGE_KEY_PUBLISHED_MENU);
         if (savedPublished) {
-          const parsed = JSON.parse(savedPublished);
-          if (parsed.sections) parsed.sections = sanitizeSections(parsed.sections);
-          if (parsed.theme) parsed.theme = sanitizeTheme(parsed.theme);
-          initialPublished = parsed;
-          setPublishedMenu(parsed);
+          try {
+            const parsed = JSON.parse(savedPublished);
+            if (parsed.sections) parsed.sections = sanitizeSections(parsed.sections);
+            if (parsed.theme) parsed.theme = sanitizeTheme(parsed.theme);
+            setPublishedMenu(parsed);
+          } catch (e) {}
         }
 
-        // Initialize Turso & fetch cloud data
-        await fetch('/api/db/init', { method: 'POST' });
-        const syncUrl = activeUser ? `/api/db/sync?user_id=${activeUser.id}&store_id=${activeUser.store_id || ''}` : '/api/db/sync';
-        const syncRes = await fetch(syncUrl);
-        if (syncRes.ok) {
-          const dbData = await syncRes.json();
-          if (dbData.success && dbData.store) {
-            setStore(dbData.store);
-            setCategories(dbData.categories || []);
-            setProducts(dbData.products || []);
-            if (dbData.draftMenu) setDraftMenu(dbData.draftMenu);
-            if (dbData.publishedMenu) setPublishedMenu(dbData.publishedMenu);
-          } else if (dbData.empty) {
-            // Push current state to initialize cloud DB
-            syncToTurso({
-              store: initialStore,
-              categories: initialCats,
-              products: initialProds,
-              draftMenu: initialDraft,
-              publishedMenu: initialPublished,
-            });
+        // Fetch cloud data for the active user
+        if (activeUser) {
+          const syncUrl = `/api/db/sync?user_id=${activeUser.id}&store_id=${activeUser.store_id || ''}`;
+          const syncRes = await fetch(syncUrl);
+          if (syncRes.ok) {
+            const dbData = await syncRes.json();
+            if (dbData.success && dbData.store) {
+              setStore(dbData.store);
+              setCategories(dbData.categories || []);
+              setProducts(dbData.products || []);
+              if (dbData.draftMenu) setDraftMenu(dbData.draftMenu);
+              if (dbData.publishedMenu) setPublishedMenu(dbData.publishedMenu);
+
+              localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(dbData.store));
+              localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(dbData.categories || []));
+              localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(dbData.products || []));
+              if (dbData.draftMenu) localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(dbData.draftMenu));
+              if (dbData.publishedMenu) localStorage.setItem(STORAGE_KEY_PUBLISHED_MENU, JSON.stringify(dbData.publishedMenu));
+            }
           }
         }
       } catch (err) {
@@ -251,48 +251,48 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Save changes to localStorage whenever state updates + background sync to Turso
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     try {
       localStorage.setItem(STORAGE_KEY_STORE, JSON.stringify(store));
     } catch (e) {}
-  }, [store, isLoading]);
+  }, [store, isLoading, user]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     try {
       localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(categories));
     } catch (e) {}
-  }, [categories, isLoading]);
+  }, [categories, isLoading, user]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     try {
       localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
     } catch (e) {}
-  }, [products, isLoading]);
+  }, [products, isLoading, user]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     try {
       localStorage.setItem(STORAGE_KEY_DRAFT_MENU, JSON.stringify(draftMenu));
     } catch (e) {}
-  }, [draftMenu, isLoading]);
+  }, [draftMenu, isLoading, user]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     try {
       localStorage.setItem(STORAGE_KEY_PUBLISHED_MENU, JSON.stringify(publishedMenu));
     } catch (e) {}
-  }, [publishedMenu, isLoading]);
+  }, [publishedMenu, isLoading, user]);
 
   // Debounced cloud sync to Turso
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     const timer = setTimeout(() => {
       syncToTurso();
     }, 1500);
     return () => clearTimeout(timer);
-  }, [store, categories, products, draftMenu, publishedMenu, isLoading]);
+  }, [store, categories, products, draftMenu, publishedMenu, isLoading, user]);
 
   // Auth functions
   const login = async (email: string, pass: string): Promise<boolean> => {

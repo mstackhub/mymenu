@@ -76,7 +76,7 @@ export async function GET(
     }));
 
     const menuRes = await turso.execute({
-      sql: "SELECT * FROM menus WHERE store_id = ? AND status = 'published' LIMIT 1",
+      sql: "SELECT * FROM menus WHERE store_id = ? ORDER BY CASE WHEN status = 'published' THEN 1 ELSE 2 END, updated_at DESC LIMIT 1",
       args: [store.id],
     });
 
@@ -88,7 +88,7 @@ export async function GET(
         store_id: String(m.store_id),
         name: String(m.name || store.name),
         slug: String(m.slug || store.slug),
-        status: 'published',
+        status: (m.status as any) || 'published',
         published_at: m.published_at ? String(m.published_at) : null,
         theme: m.theme ? JSON.parse(String(m.theme)) : undefined,
         sections: m.sections ? JSON.parse(String(m.sections)) : [],
