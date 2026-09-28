@@ -15,6 +15,7 @@ import {
   Minus,
   MessageSquare,
   CheckCircle2,
+  Maximize2,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 import { MenuSection, Product, Category, OptionGroup, ProductOption, MenuTheme } from '@/types';
@@ -165,6 +166,7 @@ export default function PublicMenuPage() {
   const [modalOptionSelections, setModalOptionSelections] = useState<Record<string, string>>({});
   const [modalQuantity, setModalQuantity] = useState<number>(1);
   const [modalNote, setModalNote] = useState<string>('');
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title?: string } | null>(null);
 
   // Load saved notes from LocalStorage on mount
   useEffect(() => {
@@ -996,15 +998,38 @@ export default function PublicMenuPage() {
             className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl border border-border flex flex-col max-h-[92vh]"
           >
             {/* 16:9 Compact Banner Image */}
-            <div className="relative w-full h-44 sm:h-52 bg-zinc-100 flex-shrink-0 overflow-hidden">
+            <div
+              className="relative w-full h-44 sm:h-52 bg-zinc-100 flex-shrink-0 overflow-hidden cursor-pointer group select-none"
+              onClick={() => {
+                if (selectedProduct) {
+                  setLightboxImage({
+                    url: selectedProduct.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&fit=crop',
+                    title: selectedProduct.name,
+                  });
+                }
+              }}
+              title="แตะเพื่อดูรูปภาพขนาดเต็ม"
+            >
               <img
                 src={selectedProduct.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&fit=crop'}
                 alt={selectedProduct.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
+              
+              {/* Zoom Indicator Badge */}
+              <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity pointer-events-none shadow-sm">
+                <Maximize2 className="w-3 h-3 text-white" />
+                <span>แตะเพื่อดูรูปเต็ม</span>
+              </div>
+
+              {/* Close Modal Button */}
               <button
-                onClick={() => setSelectedProduct(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors shadow-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedProduct(null);
+                }}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors shadow-sm z-10"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1156,6 +1181,46 @@ export default function PublicMenuPage() {
         isOpen={isNoteChatOpen}
         onToggleOpen={() => setIsNoteChatOpen(!isNoteChatOpen)}
       />
+
+      {/* Lightbox / Fullscreen Image Viewer Modal */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md animate-fade-in select-none"
+          onClick={() => setLightboxImage(null)}
+        >
+          {/* Top Bar */}
+          <div
+            className="w-full max-w-2xl flex items-center justify-between text-white mb-3 px-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="font-semibold text-sm sm:text-base truncate pr-4 text-zinc-100">
+              {lightboxImage.title || 'รูปภาพเมนู'}
+            </span>
+            <button
+              onClick={() => setLightboxImage(null)}
+              className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 active:scale-95 text-white flex items-center justify-center transition-all flex-shrink-0"
+              title="ปิด"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Large Image */}
+          <div
+            className="relative max-w-3xl max-h-[80vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={lightboxImage.url}
+              alt={lightboxImage.title || 'รูปภาพอาหาร'}
+              className="max-h-[80vh] max-w-[92vw] w-auto h-auto object-contain rounded-2xl shadow-2xl"
+            />
+          </div>
+
+          {/* Bottom Hint */}
+          <p className="text-zinc-400 text-xs mt-3 select-none">แตะบริเวณใดก็ได้เพื่อปิด</p>
+        </div>
+      )}
     </div>
   );
 }
