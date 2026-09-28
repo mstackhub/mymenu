@@ -622,12 +622,23 @@ export default function PublicMenuPage() {
                         />
                       </div>
 
-                      <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                        <div>
+                      <div
+                        className="flex-1 min-w-0 flex flex-col justify-between py-0.5"
+                        style={{
+                          textAlign: styles.textAlign || 'left',
+                          alignItems: styles.textAlign === 'center' ? 'center' : styles.textAlign === 'right' ? 'flex-end' : 'stretch',
+                        }}
+                      >
+                        <div style={{ width: '100%', textAlign: styles.textAlign || 'left' }}>
                           <h4
-                            className={`font-semibold truncate font-display ${sectionIdSafe}-pname`}
+                            className={`truncate ${sectionIdSafe}-pname`}
                             style={{
-                              color: styles.productNameColor || menuTheme.textColor || '#18181B',
+                              fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                              fontWeight: styles.fontWeight || 600,
+                              color: styles.color || styles.productNameColor || menuTheme.textColor || '#18181B',
+                              lineHeight: styles.lineHeight || 1.3,
+                              letterSpacing: styles.letterSpacing !== undefined ? `${styles.letterSpacing}px` : undefined,
+                              textAlign: styles.textAlign || 'left',
                             }}
                           >
                             {prod.name}
@@ -635,7 +646,11 @@ export default function PublicMenuPage() {
                           {prod.description && (
                             <p
                               className="text-[11px] mt-0.5 line-clamp-1 leading-snug"
-                              style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                              style={{
+                                fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                                color: menuTheme.textMutedColor || '#71717A',
+                                textAlign: styles.textAlign || 'left',
+                              }}
                             >
                               {prod.description}
                             </p>
@@ -643,18 +658,28 @@ export default function PublicMenuPage() {
                           {prod.option_groups && prod.option_groups.length > 0 && (
                             <p
                               className="text-[11px] mt-0.5 truncate"
-                              style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                              style={{
+                                fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                                color: menuTheme.textMutedColor || '#71717A',
+                                textAlign: styles.textAlign || 'left',
+                              }}
                             >
                               {prod.option_groups.map((g) => g.name).join(' • ')}
                             </p>
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-baseline gap-2">
+                        <div className="flex items-center justify-between mt-2 w-full">
+                          <div
+                            className="flex items-baseline gap-2"
+                            style={{
+                              justifyContent: styles.textAlign === 'center' ? 'center' : styles.textAlign === 'right' ? 'flex-end' : 'flex-start',
+                            }}
+                          >
                             <span
-                              className={`font-bold font-display ${sectionIdSafe}-price`}
+                              className={`font-bold ${sectionIdSafe}-price`}
                               style={{
+                                fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                 color: styles.priceColor || menuTheme.priceColor || '#FF5A36',
                               }}
                             >
@@ -664,6 +689,7 @@ export default function PublicMenuPage() {
                               <span
                                 className="text-xs line-through"
                                 style={{
+                                  fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                   color: styles.regularPriceColor || menuTheme.textMutedColor || '#A1A1AA',
                                 }}
                               >
@@ -676,7 +702,7 @@ export default function PublicMenuPage() {
                           <button
                             type="button"
                             onClick={(e) => handleQuickAddNote(prod, e)}
-                            className="w-7 h-7 bg-orange-50 hover:bg-primary-500 text-primary-600 hover:text-white rounded-lg flex items-center justify-center transition-all border border-orange-200/80 shadow-2xs"
+                            className="w-7 h-7 bg-orange-50 hover:bg-primary-500 text-primary-600 hover:text-white rounded-lg flex items-center justify-center transition-all border border-orange-200/80 shadow-2xs flex-shrink-0 ml-2"
                             title="จดเมนูนี้"
                           >
                             <Plus className="w-4 h-4" />
@@ -695,13 +721,19 @@ export default function PublicMenuPage() {
                     className="flex items-baseline justify-between py-2.5 border-b hover:opacity-85 px-2 rounded-none transition-colors cursor-pointer group"
                     style={{
                       borderColor: menuTheme.cardBorderColor || '#E4E4E7',
+                      textAlign: styles.textAlign || 'left',
                     }}
                   >
                     <div className="pr-4 flex-1">
                       <span
-                        className={`font-semibold group-hover:text-primary-600 transition-colors block ${sectionIdSafe}-pname`}
+                        className={`group-hover:text-primary-600 transition-colors block ${sectionIdSafe}-pname`}
                         style={{
-                          color: styles.productNameColor || menuTheme.textColor || '#18181B',
+                          fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                          fontWeight: styles.fontWeight || 500,
+                          color: styles.color || styles.productNameColor || menuTheme.textColor || '#18181B',
+                          lineHeight: styles.lineHeight || 1.3,
+                          letterSpacing: styles.letterSpacing !== undefined ? `${styles.letterSpacing}px` : undefined,
+                          textAlign: styles.textAlign || 'left',
                         }}
                       >
                         {prod.name}
@@ -709,15 +741,23 @@ export default function PublicMenuPage() {
                       {prod.description && (
                         <p
                           className="text-[11px] block mt-0.5 line-clamp-1 leading-snug"
-                          style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                          style={{
+                            fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                            color: menuTheme.textMutedColor || '#71717A',
+                            textAlign: styles.textAlign || 'left',
+                          }}
                         >
                           {prod.description}
                         </p>
                       )}
                       {prod.option_groups && prod.option_groups.length > 0 && (
                         <span
-                          className="text-[11px] block mt-0.5"
-                          style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                          className="text-[10px] block mt-0.5"
+                          style={{
+                            fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                            color: menuTheme.textMutedColor || '#71717A',
+                            textAlign: styles.textAlign || 'left',
+                          }}
                         >
                           {prod.option_groups.map((g) => g.name).join(', ')}
                         </span>
@@ -727,8 +767,9 @@ export default function PublicMenuPage() {
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <div className="flex items-baseline gap-2">
                         <span
-                          className={`font-bold font-display ${sectionIdSafe}-price`}
+                          className={`font-bold ${sectionIdSafe}-price`}
                           style={{
+                            fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                             color: styles.priceColor || menuTheme.priceColor || '#18181B',
                           }}
                         >
@@ -738,7 +779,8 @@ export default function PublicMenuPage() {
                           <span
                             className="text-xs line-through"
                             style={{
-                              color: styles.regularPriceColor || menuTheme.textMutedColor || '#A1A1AA',
+                              fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                              color: styles.regularPriceColor || '#A1A1AA',
                             }}
                           >
                             ฿{prod.regular_price}

@@ -20,7 +20,7 @@ import {
   Smartphone,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
-import { MenuSection, SectionStyles, SectionType } from '@/types';
+import { MenuSection, SectionStyles, SectionType, SpacingValues } from '@/types';
 import { ImageUploadModal } from '@/components/ui/ImageUploadModal';
 import { FoodSelectModal } from '@/components/builder/FoodSelectModal';
 import { ThemeSettingsPanel } from '@/components/builder/ThemeSettingsPanel';
@@ -83,30 +83,32 @@ export const PropertiesPanel: React.FC = () => {
     updateSectionContent(selectedSection.id, contentUpdates);
   };
 
-  const handleMarginChange = (side: 'top' | 'right' | 'bottom' | 'left', val: number) => {
+  const handleMarginChange = (updates: Partial<SpacingValues>) => {
     if (!selectedSection) return;
-    const current = styles.margin || { top: 0, right: 0, bottom: 0, left: 0 };
+    const current = styles.margin || { top: 0, right: 0, bottom: 16, left: 0 };
     if (isLinkMargin) {
+      const anyVal = Number(Object.values(updates)[0] ?? 0);
       updateSectionStyles(selectedSection.id, {
-        margin: { top: val, right: val, bottom: val, left: val },
+        margin: { top: anyVal, right: anyVal, bottom: anyVal, left: anyVal },
       });
     } else {
       updateSectionStyles(selectedSection.id, {
-        margin: { ...current, [side]: val },
+        margin: { ...current, ...updates },
       });
     }
   };
 
-  const handlePaddingChange = (side: 'top' | 'right' | 'bottom' | 'left', val: number) => {
+  const handlePaddingChange = (updates: Partial<SpacingValues>) => {
     if (!selectedSection) return;
-    const current = styles.padding || { top: 0, right: 0, bottom: 0, left: 0 };
+    const current = styles.padding || { top: 0, right: 16, bottom: 0, left: 16 };
     if (isLinkPadding) {
+      const anyVal = Number(Object.values(updates)[0] ?? 0);
       updateSectionStyles(selectedSection.id, {
-        padding: { top: val, right: val, bottom: val, left: val },
+        padding: { top: anyVal, right: anyVal, bottom: anyVal, left: anyVal },
       });
     } else {
       updateSectionStyles(selectedSection.id, {
-        padding: { ...current, [side]: val },
+        padding: { ...current, ...updates },
       });
     }
   };
@@ -1131,11 +1133,11 @@ export const PropertiesPanel: React.FC = () => {
           {/* Margin */}
           <div className="p-3 bg-zinc-50 border border-border rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-dark-secondary">
-              <span className="font-semibold text-dark-primary">Margin</span>
+              <span className="font-semibold text-dark-primary text-xs">Margin (ระยะห่างภายนอก)</span>
               <button
                 type="button"
                 onClick={() => setIsLinkMargin(!isLinkMargin)}
-                className={`p-1 rounded ${isLinkMargin ? 'bg-primary-50 text-primary-600' : 'text-dark-muted'}`}
+                className={`p-1 rounded transition-colors ${isLinkMargin ? 'bg-primary-50 text-primary-600' : 'text-dark-muted'}`}
                 title="Link all sides"
               >
                 {isLinkMargin ? <Link2 className="w-3.5 h-3.5" /> : <Unlink2 className="w-3.5 h-3.5" />}
@@ -1143,21 +1145,27 @@ export const PropertiesPanel: React.FC = () => {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <span className="text-[10px] text-dark-secondary">Top</span>
+                <span className="text-[10px] text-dark-secondary block mb-1">Top</span>
                 <input
                   type="number"
                   value={styles.margin?.top ?? 0}
-                  onChange={(e) => handleMarginChange('top', parseInt(e.target.value) || 0)}
-                  className="w-full p-1.5 bg-white border border-border rounded-lg text-center"
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value) || 0;
+                    handleMarginChange({ top: val });
+                  }}
+                  className="w-full p-2 bg-white border border-border rounded-xl text-xs font-mono font-medium text-center focus:outline-none focus:border-primary-500"
                 />
               </div>
               <div>
-                <span className="text-[10px] text-dark-secondary">Bottom</span>
+                <span className="text-[10px] text-dark-secondary block mb-1">Bottom</span>
                 <input
                   type="number"
                   value={styles.margin?.bottom ?? 16}
-                  onChange={(e) => handleMarginChange('bottom', parseInt(e.target.value) || 0)}
-                  className="w-full p-1.5 bg-white border border-border rounded-lg text-center"
+                  onChange={(e) => {
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value) || 0;
+                    handleMarginChange({ bottom: val });
+                  }}
+                  className="w-full p-2 bg-white border border-border rounded-xl text-xs font-mono font-medium text-center focus:outline-none focus:border-primary-500"
                 />
               </div>
             </div>
@@ -1166,11 +1174,11 @@ export const PropertiesPanel: React.FC = () => {
           {/* Padding */}
           <div className="p-3 bg-zinc-50 border border-border rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-dark-secondary">
-              <span className="font-semibold text-dark-primary">Padding</span>
+              <span className="font-semibold text-dark-primary text-xs">Padding (ระยะขอบภายใน)</span>
               <button
                 type="button"
                 onClick={() => setIsLinkPadding(!isLinkPadding)}
-                className={`p-1 rounded ${isLinkPadding ? 'bg-primary-50 text-primary-600' : 'text-dark-muted'}`}
+                className={`p-1 rounded transition-colors ${isLinkPadding ? 'bg-primary-50 text-primary-600' : 'text-dark-muted'}`}
                 title="Link all sides"
               >
                 {isLinkPadding ? <Link2 className="w-3.5 h-3.5" /> : <Unlink2 className="w-3.5 h-3.5" />}
@@ -1178,31 +1186,48 @@ export const PropertiesPanel: React.FC = () => {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <span className="text-[10px] text-dark-secondary">Horizontal (L/R)</span>
+                <span className="text-[10px] text-dark-secondary block mb-1">Horizontal (L/R)</span>
                 <input
                   type="number"
                   value={styles.padding?.left ?? 16}
                   onChange={(e) => {
-                    const val = parseInt(e.target.value) || 0;
-                    handlePaddingChange('left', val);
-                    handlePaddingChange('right', val);
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value) || 0;
+                    handlePaddingChange({ left: val, right: val });
                   }}
-                  className="w-full p-1.5 bg-white border border-border rounded-lg text-center"
+                  className="w-full p-2 bg-white border border-border rounded-xl text-xs font-mono font-medium text-center focus:outline-none focus:border-primary-500"
                 />
               </div>
               <div>
-                <span className="text-[10px] text-dark-secondary">Vertical (T/B)</span>
+                <span className="text-[10px] text-dark-secondary block mb-1">Vertical (T/B)</span>
                 <input
                   type="number"
                   value={styles.padding?.top ?? 0}
                   onChange={(e) => {
-                    const val = parseInt(e.target.value) || 0;
-                    handlePaddingChange('top', val);
-                    handlePaddingChange('bottom', val);
+                    const val = e.target.value === '' ? 0 : parseInt(e.target.value) || 0;
+                    handlePaddingChange({ top: val, bottom: val });
                   }}
-                  className="w-full p-1.5 bg-white border border-border rounded-lg text-center"
+                  className="w-full p-2 bg-white border border-border rounded-xl text-xs font-mono font-medium text-center focus:outline-none focus:border-primary-500"
                 />
               </div>
+            </div>
+
+            {/* Quick Padding Presets */}
+            <div className="grid grid-cols-4 gap-1 pt-1">
+              {[
+                { label: '0 px', val: 0 },
+                { label: '8 px', val: 8 },
+                { label: '16 px', val: 16 },
+                { label: '24 px', val: 24 },
+              ].map((p) => (
+                <button
+                  key={p.val}
+                  type="button"
+                  onClick={() => handlePaddingChange({ top: p.val, right: p.val, bottom: p.val, left: p.val })}
+                  className="py-1 text-[10px] bg-white border border-border hover:bg-zinc-100 rounded-lg text-dark-secondary font-medium transition-colors"
+                >
+                  {p.label}
+                </button>
+              ))}
             </div>
           </div>
 

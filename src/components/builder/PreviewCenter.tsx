@@ -425,13 +425,24 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                         </div>
 
                         {/* Product Content */}
-                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                          <div>
+                        <div
+                          className="flex-1 min-w-0 flex flex-col justify-between py-0.5"
+                          style={{
+                            textAlign: styles.textAlign || 'left',
+                            alignItems: styles.textAlign === 'center' ? 'center' : styles.textAlign === 'right' ? 'flex-end' : 'stretch',
+                          }}
+                        >
+                          <div style={{ width: '100%', textAlign: styles.textAlign || 'left' }}>
                             <h4
-                              className="font-semibold truncate font-display"
+                              className="truncate"
                               style={{
+                                fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                 fontSize: `${effectiveProdNameFontSize}px`,
-                                color: styles.productNameColor || menuTheme.textColor || '#18181B',
+                                fontWeight: styles.fontWeight || 600,
+                                color: styles.color || styles.productNameColor || menuTheme.textColor || '#18181B',
+                                lineHeight: styles.lineHeight || 1.3,
+                                letterSpacing: styles.letterSpacing !== undefined ? `${styles.letterSpacing}px` : undefined,
+                                textAlign: styles.textAlign || 'left',
                               }}
                             >
                               {prod.name}
@@ -439,7 +450,11 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                             {prod.description && (
                               <p
                                 className="text-[11px] mt-0.5 line-clamp-1 leading-snug"
-                                style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                                style={{
+                                  fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                                  color: menuTheme.textMutedColor || '#71717A',
+                                  textAlign: styles.textAlign || 'left',
+                                }}
                               >
                                 {prod.description}
                               </p>
@@ -447,7 +462,11 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                             {prod.option_groups && prod.option_groups.length > 0 && (
                               <p
                                 className="text-[11px] mt-0.5"
-                                style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                                style={{
+                                  fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                                  color: menuTheme.textMutedColor || '#71717A',
+                                  textAlign: styles.textAlign || 'left',
+                                }}
                               >
                                 {prod.option_groups.map((g) => g.name).join(' • ')}
                               </p>
@@ -455,10 +474,17 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                           </div>
 
                           {/* Price Row */}
-                          <div className="flex items-baseline gap-2 mt-2">
+                          <div
+                            className="flex items-baseline gap-2 mt-2"
+                            style={{
+                              justifyContent: styles.textAlign === 'center' ? 'center' : styles.textAlign === 'right' ? 'flex-end' : 'flex-start',
+                              width: '100%',
+                            }}
+                          >
                             <span
-                              className="font-bold font-display"
+                              className="font-bold"
                               style={{
+                                fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                 fontSize: `${effectivePriceFontSize}px`,
                                 color: styles.priceColor || menuTheme.priceColor || '#FF5A36',
                               }}
@@ -469,6 +495,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                               <span
                                 className="text-xs line-through"
                                 style={{
+                                  fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                   color: styles.regularPriceColor || menuTheme.textMutedColor || '#A1A1AA',
                                 }}
                               >
@@ -492,14 +519,20 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                       className="flex items-baseline justify-between py-2.5 border-b hover:opacity-85 px-2 rounded-none transition-colors cursor-pointer group"
                       style={{
                         borderColor: menuTheme.cardBorderColor || '#E4E4E7',
+                        textAlign: styles.textAlign || 'left',
                       }}
                     >
                       <div className="pr-4 flex-1">
                         <span
-                          className="font-medium group-hover:text-primary-600 transition-colors block"
+                          className="group-hover:text-primary-600 transition-colors block"
                           style={{
+                            fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                             fontSize: `${effectiveProdNameFontSize}px`,
-                            color: styles.productNameColor || menuTheme.textColor || '#27272A',
+                            fontWeight: styles.fontWeight || 500,
+                            color: styles.color || styles.productNameColor || menuTheme.textColor || '#27272A',
+                            lineHeight: styles.lineHeight || 1.3,
+                            letterSpacing: styles.letterSpacing !== undefined ? `${styles.letterSpacing}px` : undefined,
+                            textAlign: styles.textAlign || 'left',
                           }}
                         >
                           {prod.name}
@@ -507,7 +540,11 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                         {prod.description && (
                           <p
                             className="text-[11px] block mt-0.5 line-clamp-1 leading-snug"
-                            style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                            style={{
+                              fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                              color: menuTheme.textMutedColor || '#71717A',
+                              textAlign: styles.textAlign || 'left',
+                            }}
                           >
                             {prod.description}
                           </p>
@@ -515,7 +552,11 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                         {prod.option_groups && prod.option_groups.length > 0 && (
                           <span
                             className="text-[10px] block mt-0.5"
-                            style={{ color: menuTheme.textMutedColor || '#71717A' }}
+                            style={{
+                              fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                              color: menuTheme.textMutedColor || '#71717A',
+                              textAlign: styles.textAlign || 'left',
+                            }}
                           >
                             {prod.option_groups.map((g) => g.name).join(', ')}
                           </span>
@@ -526,6 +567,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                         <span
                           className="font-bold"
                           style={{
+                            fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                             fontSize: `${effectivePriceFontSize}px`,
                             color: styles.priceColor || menuTheme.priceColor || '#18181B',
                           }}
@@ -536,6 +578,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                           <span
                             className="text-xs line-through"
                             style={{
+                              fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                               color: styles.regularPriceColor || '#A1A1AA',
                             }}
                           >
