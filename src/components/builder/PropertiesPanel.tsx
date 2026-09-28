@@ -93,7 +93,12 @@ export const PropertiesPanel: React.FC = () => {
       });
     } else {
       updateSectionStyles(selectedSection.id, {
-        margin: { ...current, ...updates },
+        margin: {
+          top: updates.top !== undefined ? updates.top : current.top,
+          right: updates.right !== undefined ? updates.right : current.right,
+          bottom: updates.bottom !== undefined ? updates.bottom : current.bottom,
+          left: updates.left !== undefined ? updates.left : current.left,
+        },
       });
     }
   };
@@ -108,7 +113,12 @@ export const PropertiesPanel: React.FC = () => {
       });
     } else {
       updateSectionStyles(selectedSection.id, {
-        padding: { ...current, ...updates },
+        padding: {
+          top: updates.top !== undefined ? updates.top : (updates.bottom !== undefined ? updates.bottom : current.top),
+          right: updates.right !== undefined ? updates.right : (updates.left !== undefined ? updates.left : current.right),
+          bottom: updates.bottom !== undefined ? updates.bottom : (updates.top !== undefined ? updates.top : current.bottom),
+          left: updates.left !== undefined ? updates.left : (updates.right !== undefined ? updates.right : current.left),
+        },
       });
     }
   };
@@ -610,6 +620,56 @@ export const PropertiesPanel: React.FC = () => {
                     </div>
                   </div>
                 )}
+                {/* Card Internal Padding */}
+                <div className="space-y-1.5 pt-2 border-t border-border/70">
+                  <div className="flex items-center justify-between text-dark-secondary">
+                    <span className="font-semibold text-dark-primary text-xs">ระยะขอบภายในการ์ด (Card Padding)</span>
+                    <span className="font-mono text-xs font-bold text-dark-primary">
+                      {styles.cardPadding ?? 12}px
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min="0"
+                      max="32"
+                      value={styles.cardPadding ?? 12}
+                      onChange={(e) => handleStyleChange('cardPadding', parseInt(e.target.value) || 0)}
+                      className="flex-1 accent-primary-500 cursor-pointer"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      max="48"
+                      value={styles.cardPadding ?? 12}
+                      onChange={(e) => handleStyleChange('cardPadding', parseInt(e.target.value) || 0)}
+                      className="w-14 p-1.5 bg-zinc-50 border border-border rounded-lg text-xs font-mono text-center focus:outline-none focus:border-primary-500"
+                    />
+                  </div>
+                  {/* Card Padding Presets */}
+                  <div className="grid grid-cols-5 gap-1 pt-0.5">
+                    {[
+                      { label: '0 px', value: 0 },
+                      { label: '6 px', value: 6 },
+                      { label: '10 px', value: 10 },
+                      { label: '12 px', value: 12 },
+                      { label: '16 px', value: 16 },
+                    ].map((preset) => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => handleStyleChange('cardPadding', preset.value)}
+                        className={`py-1 text-[10px] font-semibold rounded-lg transition-all border ${
+                          (styles.cardPadding ?? 12) === preset.value
+                            ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
+                            : 'bg-zinc-50 text-dark-secondary border-border hover:bg-zinc-100 hover:text-dark-primary'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}

@@ -325,14 +325,14 @@ export default function PublicMenuPage() {
     const { type, content, styles = {} } = section;
 
     const containerStyle: React.CSSProperties = {
-      marginTop: styles.margin?.top !== undefined ? `${styles.margin.top}px` : undefined,
-      marginRight: styles.margin?.right !== undefined ? `${styles.margin.right}px` : undefined,
-      marginBottom: styles.margin?.bottom !== undefined ? `${styles.margin.bottom}px` : '16px',
-      marginLeft: styles.margin?.left !== undefined ? `${styles.margin.left}px` : undefined,
-      paddingTop: styles.padding?.top !== undefined ? `${styles.padding.top}px` : undefined,
-      paddingRight: styles.padding?.right !== undefined ? `${styles.padding.right}px` : '16px',
-      paddingBottom: styles.padding?.bottom !== undefined ? `${styles.padding.bottom}px` : undefined,
-      paddingLeft: styles.padding?.left !== undefined ? `${styles.padding.left}px` : '16px',
+      marginTop: `${styles.margin?.top ?? 0}px`,
+      marginRight: `${styles.margin?.right ?? 0}px`,
+      marginBottom: `${styles.margin?.bottom ?? 16}px`,
+      marginLeft: `${styles.margin?.left ?? 0}px`,
+      paddingTop: `${styles.padding?.top ?? 0}px`,
+      paddingRight: `${styles.padding?.right ?? (styles.padding?.left ?? 16)}px`,
+      paddingBottom: `${styles.padding?.bottom ?? (styles.padding?.top ?? 0)}px`,
+      paddingLeft: `${styles.padding?.left ?? 16}px`,
     };
 
     const sectionIdSafe = `sec-${section.id.replace(/[^a-zA-Z0-9_-]/g, '')}`;
@@ -347,7 +347,13 @@ export default function PublicMenuPage() {
     };
 
     return (
-      <div key={section.id} style={containerStyle}>
+      <div
+        key={section.id}
+        style={{
+          ...containerStyle,
+          fontFamily: styles.fontFamily || menuTheme.fontFamily || "'Sarabun', sans-serif",
+        }}
+      >
         <style>{`
           .${sectionIdSafe}-typo {
             font-size: ${styles.fontSizeMobile || styles.fontSize || 16}px;
@@ -591,11 +597,13 @@ export default function PublicMenuPage() {
                     <div
                       key={prod.id}
                       onClick={() => setSelectedProduct(prod)}
-                      className="border p-3 flex gap-3.5 hover:shadow-xs active:scale-[0.99] transition-all cursor-pointer items-center group relative"
+                      className="border flex gap-3.5 hover:shadow-xs active:scale-[0.99] transition-all cursor-pointer items-center group relative"
                       style={{
                         backgroundColor: menuTheme.cardBgColor || '#FFFFFF',
                         borderColor: menuTheme.cardBorderColor || '#E4E4E7',
                         borderRadius: styles.borderRadius !== undefined ? `${styles.borderRadius}px` : '12px',
+                        padding: styles.cardPadding !== undefined ? `${styles.cardPadding}px` : '12px',
+                        fontFamily: styles.fontFamily || menuTheme.fontFamily || "'Sarabun', sans-serif",
                       }}
                     >
                       <div

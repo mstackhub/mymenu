@@ -97,6 +97,7 @@ export interface SectionStyles {
   objectFit?: 'cover' | 'contain';
   borderRadius?: number;
   imageBorderRadius?: number;
+  cardPadding?: number;
   alignment?: 'left' | 'center' | 'right';
   backgroundColor?: string;
   
