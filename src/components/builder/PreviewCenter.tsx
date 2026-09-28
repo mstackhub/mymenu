@@ -763,7 +763,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl border border-border flex flex-col max-h-[85vh]"
           >
-            <div className="relative aspect-square w-full max-h-[360px] bg-zinc-100 flex-shrink-0">
+            <div className="relative w-full h-44 sm:h-52 bg-zinc-100 flex-shrink-0 overflow-hidden">
               <img
                 src={selectedProductForDetail.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&fit=crop'}
                 alt={selectedProductForDetail.name}
@@ -771,7 +771,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
               />
               <button
                 onClick={() => setSelectedProductForDetail(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center"
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors shadow-sm"
               >
                 ✕
               </button>
