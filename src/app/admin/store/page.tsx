@@ -10,13 +10,17 @@ import {
   ExternalLink,
   QrCode,
   Sparkles,
+  Lock,
+  ShieldCheck,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 import { ImageUploadModal } from '@/components/ui/ImageUploadModal';
 import { PublishModal } from '@/components/ui/PublishModal';
 
 export default function StoreInfoPage() {
-  const { store, updateStore, generateSlug } = useStore();
+  const { store, updateStore, generateSlug, user } = useStore();
 
   const [name, setName] = useState(store.name);
   const [slug, setSlug] = useState(store.slug);
@@ -30,6 +34,14 @@ export default function StoreInfoPage() {
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  // Change Password state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdSuccess, setPwdSuccess] = useState<string | null>(null);
 
   const handleNameChange = (val: string) => {
     setName(val);
@@ -56,6 +68,52 @@ export default function StoreInfoPage() {
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwdError(null);
+    setPwdSuccess(null);
+
+    if (newPassword !== confirmPassword) {
+      setPwdError('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPwdError('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+      return;
+    }
+
+    setPwdLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.id,
+          email: user?.email,
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPwdSuccess('เปลี่ยนรหัสผ่านเรียบร้อยแล้ว!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setTimeout(() => setPwdSuccess(null), 4000);
+      } else {
+        setPwdError(data.error || 'ไม่สามารถเปลี่ยนรหัสผ่านได้');
+      }
+    } catch (err: any) {
+      setPwdError('เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน');
+    } finally {
+      setPwdLoading(false);
+    }
+  };
+
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://mymenu.app';
 
   return (
@@ -68,7 +126,7 @@ export default function StoreInfoPage() {
               ข้อมูลร้านอาหาร (Store Profile)
             </h1>
             <p className="text-xs text-dark-secondary mt-0.5">
-              ตั้งค่าชื่อร้าน โลโก้ คำอธิบาย และ Public Slug สำหรับสร้างหน้าเมนูออนไลน์
+              ตั้งค่าชื่อร้าน โลโก้ คำอธิบาย บัญชีรับเงิน และความปลอดภัยของระบบ
             </p>
           </div>
 
@@ -279,6 +337,96 @@ export default function StoreInfoPage() {
             >
               <Save className="w-4 h-4" />
               <span>บันทึกข้อมูลร้าน</span>
+            </button>
+          </div>
+        </form>
+
+        {/* SECURITY & CHANGE PASSWORD CARD */}
+        <form onSubmit={handlePasswordChange} className="bg-white rounded-3xl border border-border shadow-xs overflow-hidden">
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-zinc-100 flex items-center justify-center text-dark-primary">
+                <Lock className="w-5 h-5 text-primary-500" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-dark-primary font-display">
+                  ความปลอดภัย & เปลี่ยนรหัสผ่าน (Security & Password)
+                </h2>
+                <p className="text-[11px] text-dark-secondary mt-0.5">
+                  เปลี่ยนรหัสผ่านสำหรับเข้าสู่ระบบหลังบ้าน MyMenu
+                </p>
+              </div>
+            </div>
+
+            {pwdError && (
+              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-xs font-medium flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{pwdError}</span>
+              </div>
+            )}
+
+            {pwdSuccess && (
+              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-xs font-medium flex items-center gap-2">
+                <Check className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                <span>{pwdSuccess}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-dark-primary block">
+                  รหัสผ่านปัจจุบัน <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3.5 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-dark-primary block">
+                  รหัสผ่านใหม่ <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="อย่างน้อย 6 ตัวอักษร"
+                  className="w-full px-3.5 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-dark-primary block">
+                  ยืนยันรหัสผ่านใหม่ <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="พิมพ์ซ้ำอีกครั้ง"
+                  className="w-full px-3.5 py-2.5 bg-zinc-50 border border-border rounded-xl text-xs focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-end gap-3">
+            <button
+              type="submit"
+              disabled={pwdLoading || !currentPassword || !newPassword || !confirmPassword}
+              className="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-900 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2"
+            >
+              {pwdLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4 text-primary-400" />}
+              <span>อัปเดตรหัสผ่านใหม่</span>
             </button>
           </div>
         </form>

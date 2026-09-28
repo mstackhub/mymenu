@@ -8,6 +8,8 @@ export async function initTursoTables() {
       password_hash TEXT NOT NULL,
       name TEXT,
       store_id TEXT,
+      reset_code TEXT,
+      reset_expires_at TEXT,
       created_at TEXT,
       updated_at TEXT
     );
@@ -76,10 +78,16 @@ export async function initTursoTables() {
     );
   `);
 
-  // Migrate existing tables if description column is missing
+  // Migrate existing tables if columns are missing
   try {
     await turso.execute('ALTER TABLE products ADD COLUMN description TEXT;');
-  } catch (e) {
-    // Column already exists or error ignored
-  }
+  } catch (e) {}
+
+  try {
+    await turso.execute('ALTER TABLE users ADD COLUMN reset_code TEXT;');
+  } catch (e) {}
+
+  try {
+    await turso.execute('ALTER TABLE users ADD COLUMN reset_expires_at TEXT;');
+  } catch (e) {}
 }
