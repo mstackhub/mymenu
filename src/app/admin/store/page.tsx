@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   AlertCircle,
   Loader2,
+  CheckCircle2,
 } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
 import { ImageUploadModal } from '@/components/ui/ImageUploadModal';
@@ -33,6 +34,7 @@ export default function StoreInfoPage() {
   const [status, setStatus] = useState(store.status);
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Change Password state
@@ -51,21 +53,26 @@ export default function StoreInfoPage() {
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateStore({
-      name,
-      slug: slug.trim().toLowerCase().replace(/[\s_-]+/g, '-'),
-      description,
-      logo_url: logoUrl,
-      bank_name: bankName,
-      bank_account_name: bankAccountName,
-      bank_account_number: bankAccountNumber,
-      promptpay_number: promptpayNumber,
-      status,
-    });
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2500);
+    setIsSaving(true);
+    try {
+      await updateStore({
+        name,
+        slug: slug.trim().toLowerCase().replace(/[\s_-]+/g, '-'),
+        description,
+        logo_url: logoUrl,
+        bank_name: bankName,
+        bank_account_name: bankAccountName,
+        bank_account_number: bankAccountNumber,
+        promptpay_number: promptpayNumber,
+        status,
+      });
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
@@ -118,6 +125,14 @@ export default function StoreInfoPage() {
 
   return (
     <>
+      {/* Floating Success Toast */}
+      {savedSuccess && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white px-5 py-3 rounded-full text-xs font-semibold shadow-2xl flex items-center gap-2.5 animate-fade-in border border-zinc-700">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <span>บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว</span>
+        </div>
+      )}
+
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -330,13 +345,40 @@ export default function StoreInfoPage() {
           </div>
 
           {/* Submit footer */}
-          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-end gap-3">
+          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-between gap-3">
+            <div>
+              {savedSuccess && (
+                <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว</span>
+                </span>
+              )}
+            </div>
             <button
               type="submit"
-              className="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2"
+              disabled={isSaving}
+              className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2 ${
+                savedSuccess
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'
+                  : 'bg-primary-500 hover:bg-primary-600 active:scale-95'
+              }`}
             >
-              <Save className="w-4 h-4" />
-              <span>บันทึกข้อมูลร้าน</span>
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>กำลังบันทึก...</span>
+                </>
+              ) : savedSuccess ? (
+                <>
+                  <Check className="w-4 h-4 text-white stroke-[3]" />
+                  <span>บันทึกสำเร็จแล้ว!</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>บันทึกข้อมูลร้าน</span>
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -419,7 +461,15 @@ export default function StoreInfoPage() {
             </div>
           </div>
 
-          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-end gap-3">
+          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-between gap-3">
+            <div>
+              {pwdSuccess && (
+                <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{pwdSuccess}</span>
+                </span>
+              )}
+            </div>
             <button
               type="submit"
               disabled={pwdLoading || !currentPassword || !newPassword || !confirmPassword}
