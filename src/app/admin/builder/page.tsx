@@ -30,7 +30,7 @@ export default function MenuBuilderPage() {
 
   // If user selects a section in elements or preview, automatically open properties on mobile
   useEffect(() => {
-    if (selectedSectionId && mobileTab === 'elements') {
+    if (selectedSectionId && (mobileTab === 'elements' || mobileTab === 'preview')) {
       setMobileTab('properties');
     }
   }, [selectedSectionId]);

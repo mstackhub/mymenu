@@ -278,7 +278,10 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                 <button
                   type="button"
                   onClick={(e) => {
-                    e.stopPropagation();
+                    if (!isPublicView) {
+                      e.stopPropagation();
+                      setSelectedSectionId(section.id);
+                    }
                     setActiveCategoryId('all');
                   }}
                   className={`px-3.5 py-1.5 font-medium text-xs whitespace-nowrap transition-all ${
@@ -317,7 +320,10 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                     key={cat.id}
                     type="button"
                     onClick={(e) => {
-                      e.stopPropagation();
+                      if (!isPublicView) {
+                        e.stopPropagation();
+                        setSelectedSectionId(section.id);
+                      }
                       setActiveCategoryId(cat.id);
                     }}
                     className={`px-3.5 py-1.5 font-medium text-xs whitespace-nowrap transition-all ${
@@ -396,8 +402,12 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                       <div
                         key={prod.id}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProductForDetail(prod);
+                          if (!isPublicView) {
+                            e.stopPropagation();
+                            setSelectedSectionId(section.id);
+                          } else {
+                            setSelectedProductForDetail(prod);
+                          }
                         }}
                         className="group border flex gap-3.5 hover:shadow-xs transition-all cursor-pointer items-center"
                         style={{
@@ -459,7 +469,7 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                               <p
                                 className="text-[11px] mt-0.5 line-clamp-1 leading-snug"
                                 style={{
-                                  fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
+                                   fontFamily: styles.fontFamily || menuTheme.fontFamily || undefined,
                                   color: menuTheme.textMutedColor || '#71717A',
                                   textAlign: styles.textAlign || 'left',
                                 }}
@@ -521,8 +531,12 @@ export const PreviewCenter: React.FC<PreviewCenterProps> = ({
                     <div
                       key={prod.id}
                       onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedProductForDetail(prod);
+                        if (!isPublicView) {
+                          e.stopPropagation();
+                          setSelectedSectionId(section.id);
+                        } else {
+                          setSelectedProductForDetail(prod);
+                        }
                       }}
                       className="flex items-baseline justify-between py-2.5 border-b hover:opacity-85 px-2 rounded-none transition-colors cursor-pointer group"
                       style={{
