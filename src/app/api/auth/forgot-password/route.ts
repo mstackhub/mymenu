@@ -3,11 +3,11 @@ import crypto from 'crypto';
 import { turso, isTursoConfigured } from '@/lib/turso';
 import { initTursoTables } from '@/lib/turso-schema';
 
-async function sendResetEmail(toEmail: string, code: string, userName?: string) {
+async function sendResetEmail(toEmail: string, code: string, userName?: string): Promise<{ success: boolean; error?: string }> {
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
     try {
-      await fetch('https://api.resend.com/emails', {
+      const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${resendKey}`,
@@ -18,7 +18,7 @@ async function sendResetEmail(toEmail: string, code: string, userName?: string) 
           to: toEmail,
           subject: `[MyMenu] รหัสรีเซ็ตรหัสผ่านของคุณ: ${code}`,
           html: `
-            <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; rounded: 16px;">
+            <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 16px;">
               <h2 style="color: #f97316; margin-top: 0;">MyMenu Backoffice</h2>
               <p>สวัสดี ${userName || 'คุณเจ้าของร้าน'},</p>
               <p>คุณได้ทำการร้องขอรหัสผ่านใหม่สำหรับระบบ MyMenu โปรดใช้รหัสยืนยัน 4 หลักด้านล่างนี้ในการตั้งรหัสผ่านใหม่:</p>
@@ -30,11 +30,21 @@ async function sendResetEmail(toEmail: string, code: string, userName?: string) 
           `,
         }),
       });
-    } catch (e) {
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error('Resend API returned error:', res.status, errData);
+        return { success: false, error: errData.message || 'Resend error' };
+      }
+
+      return { success: true };
+    } catch (e: any) {
       console.error('Failed to send email via Resend:', e);
+      return { success: false, error: e.message };
     }
   } else {
     console.log(`[AUTH] 4-digit Reset Code for ${toEmail}: ${code}`);
+    return { success: false, error: 'No RESEND_API_KEY' };
   }
 }
 
@@ -76,13 +86,14 @@ export async function POST(req: Request) {
         args: [otpCode, expiresAt, user.id],
       });
 
-      await sendResetEmail(cleanEmail, otpCode, user.name);
+      const emailResult = await sendResetEmail(cleanEmail, otpCode, user.name);
 
       return NextResponse.json({
         success: true,
-        message: 'ส่งรหัสยืนยัน 4 หลักไปยังอีเมลของคุณแล้ว (โปรดตรวจสอบกล่องข้อความหรือ Spam)',
-        // If in development or no email key configured, return code in preview for ease of testing
-        codePreview: !process.env.RESEND_API_KEY ? otpCode : undefined,
+        message: emailResult.success
+          ? 'ส่งรหัสยืนยัน 4 หลักไปยังอีเมลของคุณแล้ว (โปรดตรวจสอบกล่องข้อความหรือโฟลเดอร์ Spam/Junk)'
+          : 'สร้างรหัสยืนยันเรียบร้อยแล้ว (โปรดใช้รหัสบนหน้าจอ)',
+        codePreview: !emailResult.success ? otpCode : undefined,
       });
     }
 
