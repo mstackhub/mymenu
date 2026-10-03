@@ -217,7 +217,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
       </aside>
 
       {/* Main Content Area */}
-      <main className={`flex-1 flex flex-col min-w-0 ${isBuilder ? 'h-screen overflow-hidden' : 'min-h-screen overflow-x-hidden'}`}>
+      <main className={`flex-1 flex flex-col min-w-0 w-full max-w-full ${isBuilder ? 'h-screen overflow-hidden' : 'min-h-screen overflow-x-hidden'}`}>
         {children}
       </main>
     </div>
