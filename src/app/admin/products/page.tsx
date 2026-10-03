@@ -264,39 +264,39 @@ export default function ProductsPage() {
                     key={product.id}
                     className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-zinc-50/60 transition-colors"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-start gap-3.5 sm:gap-4 min-w-0 flex-1">
                       <img
                         src={product.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150&fit=crop'}
                         alt={product.name}
-                        className="w-16 h-16 rounded-2xl object-cover border border-border shadow-xs flex-shrink-0"
+                        className="w-16 h-16 rounded-2xl object-cover border border-border shadow-xs flex-shrink-0 mt-0.5"
                       />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-dark-primary font-display">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-sm font-bold text-dark-primary font-display break-words">
                             {product.name}
                           </h3>
                           <span
-                            className={`text-[10px] px-2 py-0.2 rounded-full font-medium ${
+                            className={`text-[10px] px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap flex-shrink-0 inline-flex items-center ${
                               product.status === 'active'
-                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                                : 'bg-zinc-100 text-dark-muted'
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200/80'
+                                : 'bg-zinc-100 text-dark-muted border border-zinc-200'
                             }`}
                           >
                             {product.status === 'active' ? 'เปิดขาย' : 'ซ่อน'}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[11px] bg-zinc-100 text-dark-secondary px-2 py-0.5 rounded-md font-medium">
+                        <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                          <span className="text-[11px] bg-zinc-100 text-dark-secondary px-2 py-0.5 rounded-md font-medium whitespace-nowrap">
                             {category?.name || 'ไม่มีหมวดหมู่'}
                           </span>
                           {product.option_groups && product.option_groups.length > 0 && (
-                            <span className="text-[11px] text-primary-600 font-medium">
+                            <span className="text-[11px] text-primary-600 bg-orange-50 px-2 py-0.5 rounded-md font-medium whitespace-nowrap border border-orange-100">
                               +{product.option_groups.length} กลุ่มตัวเลือก
                             </span>
                           )}
                         </div>
                         {product.description && (
-                          <p className="text-xs text-dark-muted line-clamp-1 mt-1 max-w-md">
+                          <p className="text-xs text-dark-secondary line-clamp-3 mt-1.5 leading-relaxed break-words [overflow-wrap:anywhere]">
                             {product.description}
                           </p>
                         )}
