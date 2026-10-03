@@ -69,7 +69,7 @@ export default function CategoriesPage() {
         {/* Add Category Input */}
         <form
           onSubmit={handleAddCategory}
-          className="bg-white p-4 rounded-2xl border border-border shadow-xs flex items-center gap-2"
+          className="bg-white p-3 sm:p-4 rounded-2xl border border-border shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
         >
           <input
             type="text"
@@ -81,7 +81,7 @@ export default function CategoriesPage() {
           />
           <button
             type="submit"
-            className="px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 whitespace-nowrap"
+            className="px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             <span>เพิ่มหมวดหมู่</span>

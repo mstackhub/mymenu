@@ -68,6 +68,14 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         </button>
       </div>
 
+      {/* Mobile Backdrop Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-25 bg-black/50 backdrop-blur-xs animate-fade-in"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
       <aside
         className={`fixed md:sticky top-0 left-0 z-30 h-screen ${
