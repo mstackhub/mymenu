@@ -158,18 +158,18 @@ export default function AdminDashboardPage() {
 
         {/* Product Preview List */}
         <div className="bg-white rounded-3xl border border-border shadow-xs overflow-hidden">
-          <div className="p-4 sm:p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
+          <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm sm:text-base font-bold text-dark-primary font-display">
                 รายการอาหารล่าสุด
               </h3>
-              <p className="text-xs text-dark-secondary mt-0.5">
+              <p className="text-[11px] sm:text-xs text-dark-secondary mt-0.5 truncate sm:whitespace-normal">
                 จัดการรายการอาหาร ราคา และตัวเลือกพิเศษ (Option Groups)
               </p>
             </div>
             <Link
               href="/admin/products"
-              className="px-3.5 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-orange-50 hover:bg-orange-100 text-primary-600 border border-orange-200/80 text-[11px] sm:text-xs font-bold rounded-xl transition-all whitespace-nowrap flex-shrink-0 active:scale-95 shadow-2xs"
             >
               <span>ดูทั้งหมด ({products.length})</span>
               <ArrowRight className="w-3.5 h-3.5" />
