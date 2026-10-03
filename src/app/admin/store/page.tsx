@@ -135,9 +135,9 @@ export default function StoreInfoPage() {
 
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-dark-primary font-display">
+            <h1 className="text-xl sm:text-2xl font-bold text-dark-primary font-display">
               ข้อมูลร้านอาหาร (Store Profile)
             </h1>
             <p className="text-xs text-dark-secondary mt-0.5">
@@ -148,7 +148,7 @@ export default function StoreInfoPage() {
           <button
             type="button"
             onClick={() => setIsPublishModalOpen(true)}
-            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 self-start sm:self-auto"
           >
             <QrCode className="w-4 h-4 text-primary-500" />
             <span>QR Code ร้าน</span>
@@ -157,7 +157,7 @@ export default function StoreInfoPage() {
 
         {/* Store Form Card */}
         <form onSubmit={handleSave} className="bg-white rounded-3xl border border-border shadow-xs overflow-hidden">
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-4 sm:p-6 lg:p-8 space-y-6">
             {savedSuccess && (
               <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-xs font-medium flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600" />
@@ -170,8 +170,8 @@ export default function StoreInfoPage() {
               <label className="text-xs font-bold text-dark-primary uppercase tracking-wider block mb-2">
                 โลโก้ร้านอาหาร (Logo)
               </label>
-              <div className="flex items-center gap-4">
-                <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-border bg-zinc-50 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-border bg-zinc-50 flex-shrink-0">
                   <img
                     src={logoUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&fit=crop'}
                     alt={name}
@@ -182,7 +182,7 @@ export default function StoreInfoPage() {
                   <button
                     type="button"
                     onClick={() => setIsLogoModalOpen(true)}
-                    className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors inline-flex items-center gap-2"
+                    className="px-3.5 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors inline-flex items-center gap-2"
                   >
                     <ImageIcon className="w-4 h-4 text-primary-500" />
                     <span>เปลี่ยนโลโก้ (แนะนำ 800 × 800 px)</span>
