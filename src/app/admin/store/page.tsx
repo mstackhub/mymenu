@@ -135,12 +135,12 @@ export default function StoreInfoPage() {
 
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-dark-primary font-display">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg sm:text-2xl font-bold text-dark-primary font-display truncate sm:whitespace-normal">
               ข้อมูลร้านอาหาร (Store Profile)
             </h1>
-            <p className="text-xs text-dark-secondary mt-0.5">
+            <p className="text-[11px] sm:text-xs text-dark-secondary mt-0.5 truncate sm:whitespace-normal">
               ตั้งค่าชื่อร้าน โลโก้ คำอธิบาย บัญชีรับเงิน และความปลอดภัยของระบบ
             </p>
           </div>
@@ -148,9 +148,9 @@ export default function StoreInfoPage() {
           <button
             type="button"
             onClick={() => setIsPublishModalOpen(true)}
-            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-dark-primary text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-1.5 self-start sm:self-auto"
+            className="px-3.5 py-2 bg-orange-50 hover:bg-orange-100 text-primary-600 border border-orange-200/80 text-xs font-bold rounded-xl transition-all inline-flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 active:scale-95 shadow-2xs"
           >
-            <QrCode className="w-4 h-4 text-primary-500" />
+            <QrCode className="w-4 h-4 text-primary-500 flex-shrink-0" />
             <span>QR Code ร้าน</span>
           </button>
         </div>
@@ -211,20 +211,33 @@ export default function StoreInfoPage() {
 
             {/* Store Slug */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-dark-primary block">
-                Store Slug (Public URL) <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center">
-                <span className="px-3 py-2.5 bg-zinc-100 border border-r-0 border-border rounded-l-xl text-xs text-dark-secondary font-mono">
-                  {origin}/m/
-                </span>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-dark-primary block">
+                  Store Slug (Public URL) <span className="text-red-500">*</span>
+                </label>
+                <a
+                  href={`/m/${slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-primary-500 hover:underline inline-flex items-center gap-1 font-medium"
+                >
+                  <span>เปิดดูหน้าเว็บจริง</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl border border-border bg-zinc-50 focus-within:border-primary-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary-500/10 transition-all overflow-hidden">
+                <div className="px-3.5 py-2 sm:py-2.5 bg-zinc-100/90 text-dark-secondary text-[11px] sm:text-xs font-mono border-b sm:border-b-0 sm:border-r border-border flex items-center gap-1.5 whitespace-nowrap overflow-x-auto select-none">
+                  <Globe className="w-3.5 h-3.5 text-dark-muted flex-shrink-0" />
+                  <span className="truncate">{origin}/m/</span>
+                </div>
                 <input
                   type="text"
                   required
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                   placeholder="somtum-house"
-                  className="flex-1 px-3 py-2.5 bg-zinc-50 border border-border rounded-r-xl text-xs font-mono font-medium text-dark-primary focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
+                  className="flex-1 px-3.5 py-2.5 bg-transparent text-xs font-mono font-bold text-primary-600 focus:outline-none placeholder:text-dark-muted placeholder:font-normal"
                 />
               </div>
               <p className="text-[11px] text-dark-secondary">
@@ -345,22 +358,14 @@ export default function StoreInfoPage() {
           </div>
 
           {/* Submit footer */}
-          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-between gap-3">
-            <div>
-              {savedSuccess && (
-                <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว</span>
-                </span>
-              )}
-            </div>
+          <div className="p-4 sm:p-6 bg-soft/60 border-t border-border flex flex-col items-center justify-center gap-3">
             <button
               type="submit"
               disabled={isSaving}
-              className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2 ${
+              className={`w-full sm:w-auto min-w-[200px] px-8 py-3 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 ${
                 savedSuccess
                   ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'
-                  : 'bg-primary-500 hover:bg-primary-600 active:scale-95'
+                  : 'bg-primary-500 hover:bg-primary-600 active:scale-95 shadow-primary-500/20'
               }`}
             >
               {isSaving ? (
@@ -380,6 +385,12 @@ export default function StoreInfoPage() {
                 </>
               )}
             </button>
+            {savedSuccess && (
+              <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว</span>
+              </span>
+            )}
           </div>
         </form>
 
@@ -461,23 +472,21 @@ export default function StoreInfoPage() {
             </div>
           </div>
 
-          <div className="px-6 sm:px-8 py-4 bg-soft/60 border-t border-border flex items-center justify-between gap-3">
-            <div>
-              {pwdSuccess && (
-                <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>{pwdSuccess}</span>
-                </span>
-              )}
-            </div>
+          <div className="p-4 sm:p-6 bg-soft/60 border-t border-border flex flex-col items-center justify-center gap-3">
             <button
               type="submit"
               disabled={pwdLoading || !currentPassword || !newPassword || !confirmPassword}
-              className="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-900 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2"
+              className="w-full sm:w-auto min-w-[200px] px-8 py-3 bg-zinc-800 hover:bg-zinc-900 disabled:opacity-50 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
             >
               {pwdLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4 text-primary-400" />}
               <span>อัปเดตรหัสผ่านใหม่</span>
             </button>
+            {pwdSuccess && (
+              <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{pwdSuccess}</span>
+              </span>
+            )}
           </div>
         </form>
       </div>
